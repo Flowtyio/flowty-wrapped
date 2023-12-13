@@ -92,7 +92,6 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
                     )
                 case Type<MetadataViews.Editions>():
                     let editionYear = MetadataViews.Edition(name: "Flowty Wrapped 2023", number: self.id, max: nil)
-                    let editionInfo = MetadataViews.Edition(name: "Flowty Wrapped", number: self.id, max: nil)
                     let editionList: [MetadataViews.Edition] = [editionInfo, editionYear]
                     return MetadataViews.Editions(
                         editionList
