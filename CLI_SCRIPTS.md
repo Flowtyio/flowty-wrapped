@@ -12,7 +12,7 @@ On account name you can add: `emulator-1`
 
 3 - Mint FlowtyWrapped
 
-`flow transactions send --signer=emulator-account transactions/mint_flowty_wrapped.cdc '0x01cf0e2f2f715450' '2023'`
+`flow transactions send --signer=emulator-account transactions/mint_flowty_wrapped.cdc '0x01cf0e2f2f715450'`
 
 4 - Check NFT Edition
 

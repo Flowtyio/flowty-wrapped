@@ -4,7 +4,7 @@ import "NonFungibleToken"
 import "MetadataViews"
 
 
-transaction(recipient: Address, year: UInt64) {
+transaction(recipient: Address) {
     // local variable for storing the minter reference
     let minter: &FlowtyWrapped.NFTMinter
 
@@ -16,7 +16,7 @@ transaction(recipient: Address, year: UInt64) {
 
     execute {
         let receiver = getAccount(recipient).getCapability<&{NonFungibleToken.CollectionPublic}>(FlowtyWrapped.CollectionPublicPath).borrow()!
-        let nft <- self.minter.mintNFT(year: year)
+        let nft <- self.minter.mintNFT()
         receiver.deposit(token: <-nft)
 
     }
