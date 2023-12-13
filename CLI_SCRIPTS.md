@@ -7,9 +7,13 @@ Flow CLI ready to paste scripts for Flowty Wrapper transactions and scripts
 
 On account name you can add: `emulator-1`
 
-2 - Setup FlowtyWrapper Collection
-`flow transactions send --signer=emulator-1 transactions/setup_flowty_wrapper.cdc`
+2 - Setup FlowtyWrapped Collection
+`flow transactions send --signer=emulator-1 transactions/setup_flowty_wrapped.cdc`
 
-3 - Mint FlowtyWrapper 
+3 - Mint FlowtyWrapped
 
-`flow transactions send --signer=emulator-account transactions/mint_flowty_wrapper.cdc '0x01cf0e2f2f715450'`
+`flow transactions send --signer=emulator-account transactions/mint_flowty_wrapped.cdc '0x01cf0e2f2f715450' '2023'`
+
+4 - Check NFT Edition
+
+`flow scripts execute scripts/get_editions_flowty_wrapped.cdc '0x01cf0e2f2f715450' '2'`
