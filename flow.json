@@ -1,6 +1,7 @@
 {
 	"contracts": {
 		"FlowtyWrapped": "./contracts/FlowtyWrapped.cdc",
+		"WrappedEditions": "./contracts/WrappedEditions.cdc",
 		"FlowtyRaffles": "./contracts/raffle/FlowtyRaffles.cdc",
 		"FlowtyRaffleSource": "./contracts/raffle/FlowtyRaffleSource.cdc",
 		"FungibleToken": {
