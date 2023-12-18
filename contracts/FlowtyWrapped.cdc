@@ -3,10 +3,14 @@ import "MetadataViews"
 import "ViewResolver"
 import "FungibleToken"
 
-pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
+import "FlowtyRaffles"
+import "FlowtyRaffleSource"
 
+pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     // Total supply of FlowtyWrappeds
     pub var totalSupply: UInt64
+
+    access(account) let editions: {String: {WrappedEdition}}
 
     /// The event that is emitted when the contract is created
     pub event ContractInitialized()
@@ -26,6 +30,77 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     // We only have a public path for minting to let FlowtyWrappeds be like a faucet.
     pub let MinterPublicPath: PublicPath
 
+    pub struct interface WrappedEdition {
+        pub fun resolveView(_ t: Type, _ nft: &NFT): AnyStruct?
+        access(account) fun mint(data: AnyStruct): @NFT
+    }
+
+    pub struct Wrapped2023Data {
+        pub let address: Address
+        pub let tickets: Int
+
+        init(_ address: Address, _ tickets: Int) {
+            self.address = address
+            self.tickets = tickets
+        }
+    }
+
+    // TODO: define the 2023 edition
+    pub struct Edition2023: WrappedEdition {
+        pub let name: String
+        pub var supply: UInt64
+        pub let raffleID: UInt64
+
+        pub fun resolveView(_ t: Type, _ nft: &NFT): AnyStruct? {
+            switch t {
+                case Type<MetadataViews.Display>():
+                    return MetadataViews.Display(
+                        name: "Flowty Wrapped 2023 #".concat(nft.serial.toString()),
+                        description: "A celebration and statistical review of an exciting year on Flowty and across the Flow blockchain ecosystem.",
+                        thumbnail: MetadataViews.HTTPFile(
+                            url: nft.image
+                        )
+                    )
+                case Type<MetadataViews.Editions>():
+                    let editionYear = MetadataViews.Edition(name: "Flowty Wrapped 2023", number: nft.serial, max: nil)
+                    let editionList: [MetadataViews.Edition] = [editionYear]
+                    return MetadataViews.Editions(
+                        editionList
+                    )
+            }
+
+            return nil
+        }
+
+        access(account) fun mint(data: AnyStruct): @NFT {
+            self.supply = self.supply + 1
+            let casted = data as! Wrapped2023Data
+            let nft <- create NFT(id: FlowtyWrapped.totalSupply, serial: self.supply, editionName: self.name)
+
+            // allocate tickets
+            let manager = FlowtyWrapped.getManager()
+            let raffle = manager.borrowRaffle(id: self.raffleID)
+                ?? panic("raffle not found in manager")
+            
+            let entries: [Address] = []
+            var count = 0
+            while count < casted.tickets {
+                entries.append(casted.address)
+            }
+            raffle.addEntries(entries)
+
+            return <- nft
+        }
+
+        init(name: String, raffleID: UInt64) {
+            self.name = name
+            self.supply = 0
+            self.raffleID = raffleID
+        }
+    }
+
+    // TODO: define the 2023 edition struct
+
     /// The core resource that represents a Non Fungible Token. 
     /// New instances will be created using the NFTMinter resource
     /// and stored in the Collection resource
@@ -34,14 +109,22 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
 
         /// The unique ID that each NFT has
         pub let id: UInt64
+        pub let serial: UInt64
+        pub let editionName: String
+        
         pub let image: String
         pub let richHtml: String
         pub let data: {String: AnyStruct} // any extra data like a name or mint time
 
         init(
             id: UInt64,
+            serial: UInt64,
+            editionName: String
         ) {
             self.id = id
+            self.serial = serial
+            self.editionName = editionName
+
             self.image = "https://storage.googleapis.com/flowty-images/flowty-logo.jpeg"
             self.richHtml = ""
             self.data = {}
@@ -56,15 +139,15 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         ///
         pub fun getViews(): [Type] {
             return [
-                Type<MetadataViews.Display>(),
-                Type<MetadataViews.Medias>(),
+                Type<MetadataViews.Display>(), // TODO: this is dynamic
+                Type<MetadataViews.Medias>(), // TODO: this is dynamic
                 Type<MetadataViews.Royalties>(),
                 Type<MetadataViews.Editions>(),
                 Type<MetadataViews.ExternalURL>(),
                 Type<MetadataViews.NFTCollectionData>(),
                 Type<MetadataViews.NFTCollectionDisplay>(),
-                Type<MetadataViews.Serial>(),
-                Type<MetadataViews.Traits>()
+                Type<MetadataViews.Serial>(), // TODO: this is dynamic
+                Type<MetadataViews.Traits>() // TODO: this is dynamic
             ]
         }
 
@@ -75,42 +158,27 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         ///
         pub fun resolveView(_ view: Type): AnyStruct? {
             switch view {
-                case Type<MetadataViews.Display>():
-                    return MetadataViews.Display(
-                        name: "FlowtyWrapped #".concat(self.id.toString()),
-                        description: "A celebration and statistical review of an exciting year on Flowty and across the Flow blockchain ecosystem.",
-                        thumbnail: MetadataViews.HTTPFile(
-                            url: self.image
-                        )
-                    )
-                case Type<MetadataViews.Medias>():
-                    let imageMedia = MetadataViews.Media(file: MetadataViews.HTTPFile(url: self.image), mediaType: "image/jpeg")
-                    let htmlMedia = MetadataViews.Media(file: MetadataViews.HTTPFile(url: self.richHtml), mediaType: "text/html")
-                    let mediasList: [MetadataViews.Media] = [imageMedia, htmlMedia]
-                    return MetadataViews.Medias(
-                        mediasList
-                    )
+                case Type<MetadataViews.Display>(): // TODO: this is dynamic
+                    let edition = FlowtyWrapped.getEdition(self.editionIndex)
+                    return edition.resolveView(view, &self as &NFT)
+                case Type<MetadataViews.Medias>(): // TODO: this is dynamic
+                    let edition = FlowtyWrapped.getEdition(self.editionIndex)
+                    return edition.resolveView(view, &self as &NFT)
+                    // let imageMedia = MetadataViews.Media(file: MetadataViews.HTTPFile(url: self.image), mediaType: "image/jpeg")
+                    // let htmlMedia = MetadataViews.Media(file: MetadataViews.HTTPFile(url: self.richHtml), mediaType: "text/html")
+                    // let mediasList: [MetadataViews.Media] = [imageMedia, htmlMedia]
+                    // return MetadataViews.Medias(
+                    //     mediasList
+                    // )
                 case Type<MetadataViews.Editions>():
-                    let editionYear = MetadataViews.Edition(name: "Flowty Wrapped 2023", number: self.id, max: nil)
-                    let editionList: [MetadataViews.Edition] = [editionInfo, editionYear]
-                    return MetadataViews.Editions(
-                        editionList
-                    )
-                case Type<MetadataViews.Serial>():
+                    let edition = FlowtyWrapped.getEdition(self.editionIndex)
+                    return edition.resolveView(view, &self as &NFT)
+                case Type<MetadataViews.Serial>(): // TODO: this is dynamic
                     return MetadataViews.Serial(
                         self.id
                     )
                 case Type<MetadataViews.Royalties>():
-                    // note: Royalties are not aware of the token being used with, so the path is not useful right now
-                    // eventually the FungibleTokenSwitchboard might be an option
-                    // https://github.com/onflow/flow-ft/blob/master/contracts/FungibleTokenSwitchboard.cdc
-                    let cut = MetadataViews.Royalty(
-                        receiver: FlowtyWrapped.account.getCapability<&{FungibleToken.Receiver}>(/public/somePath),
-                        cut: 0.050, // 5% royalty
-                        description: "Creator Royalty"
-                    )
-                    var royalties: [MetadataViews.Royalty] = [cut]
-                    return MetadataViews.Royalties(royalties)
+                    return nil
                 case Type<MetadataViews.ExternalURL>():
                     // TODO: Uncomment this with your own base url!
                     // return MetadataViews.ExternalURL("YOUR_BASE_URL/".concat(self.id.toString()))
@@ -120,9 +188,8 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
                 case Type<MetadataViews.NFTCollectionDisplay>():
                     return FlowtyWrapped.resolveView(view)
                 case Type<MetadataViews.Traits>():
-                    // let traitsView = MetadataViews.dictToTraits()
-                    // return traitsView
-                    return nil
+                    let edition = FlowtyWrapped.getEdition(self.editionIndex)
+                    return edition.resolveView(view, &self as &NFT)
             }
             return nil
         }
@@ -258,6 +325,8 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// @param recipient: A capability to the collection where the new NFT will be deposited
         ///
         pub fun mintNFT(): @FlowtyWrapped.NFT {
+            // TODO: take in an edition and a dictionary to mint with
+
             // we want IDs to start at 1, so we'll increment first
             FlowtyWrapped.totalSupply = FlowtyWrapped.totalSupply + 1
 
@@ -329,8 +398,17 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         ]
     }
 
+    // TODO: remove
     pub fun borrowMinter(): &{MinterPublic} {
         return self.account.borrow<&{MinterPublic}>(from: self.MinterStoragePath)!
+    }
+
+    access(contract) fun getManager(): &FlowtyRaffles.Manager {
+        return self.account.borrow<&FlowtyRaffles.Manager>(from: FlowtyRaffles.ManagerStoragePath)!
+    }
+
+    pub fun getEdition(_ name: String): {WrappedEdition} {
+        return self.editions[name]!
     }
 
     init() {
@@ -361,5 +439,11 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         self.account.save(<-minter, to: self.MinterStoragePath)
 
         emit ContractInitialized()
+
+        let manager <- FlowtyRaffles.createManager()
+        self.account.save(<-manager, to: FlowtyRaffles.ManagerStoragePath)
+        self.account.link<&FlowtyRaffles.Manager{FlowtyRaffles.ManagerPublic}>(FlowtyRaffles.ManagerPublicPath, target: FlowtyRaffles.ManagerStoragePath)
+
+        self.editions = {}
     }
 }

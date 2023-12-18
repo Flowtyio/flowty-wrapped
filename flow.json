@@ -1,6 +1,8 @@
 {
 	"contracts": {
 		"FlowtyWrapped": "./contracts/FlowtyWrapped.cdc",
+		"FlowtyRaffles": "./contracts/raffle/FlowtyRaffles.cdc",
+		"FlowtyRaffleSource": "./contracts/raffle/FlowtyRaffleSource.cdc",
 		"FungibleToken": {
 			"source": "./node_modules/@flowtyio/flow-contracts/contracts/FungibleToken.cdc",
 			"aliases": {
@@ -56,7 +58,9 @@
 				"ViewResolver",
 				"NonFungibleToken",
 				"MetadataViews",
-				"FlowtyWrapped"
+				"FlowtyWrapped",
+				"FlowtyRaffles",
+				"FlowtyRaffleSource"
 			],
 			"emulator-ft": [
 				"FungibleToken"
