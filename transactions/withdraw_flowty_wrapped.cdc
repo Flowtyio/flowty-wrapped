@@ -6,17 +6,17 @@ import "MetadataViews"
 
 transaction(recipient: Address) {
     // local variable for storing the minter reference
-    let minter: &FlowtyWrapped.NFTMinter
+    let collection: &FlowtyWrapped.Collection
 
     prepare(acct: AuthAccount) {
         // borrow a reference to the NFTMinter resource in storage
-        self.minter = acct.borrow<&FlowtyWrapped.NFTMinter>(from: /storage/FlowtyWrapped_0xf8d6e0586b0a20c7_Minter)
+        self.collection = acct.borrow<&FlowtyWrapped.Collection>(from: FlowtyWrapped.CollectionStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
     }
 
     execute {
         let receiver = getAccount(recipient).getCapability<&{NonFungibleToken.CollectionPublic}>(FlowtyWrapped.CollectionPublicPath).borrow()!
-        let nft <- self.minter.mintNFT(ownerAddress: recipient)
+        let nft <- self.collection.withdraw(withdrawID: 1)
         receiver.deposit(token: <-nft)
 
     }

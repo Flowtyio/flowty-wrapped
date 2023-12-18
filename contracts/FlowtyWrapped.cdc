@@ -36,14 +36,17 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         pub let id: UInt64
         pub let image: String
         pub let richHtml: String
+        pub let ownerAddress: Address
         pub let data: {String: AnyStruct} // any extra data like a name or mint time
 
         init(
             id: UInt64,
+            ownerAddress: Address
         ) {
             self.id = id
             self.image = "https://storage.googleapis.com/flowty-images/flowty-logo.jpeg"
             self.richHtml = ""
+            self.ownerAddress = ownerAddress
             self.data = {}
 
             // We will add some Raffle entry logic here, probably 
@@ -74,6 +77,8 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// @return A structure representing the requested view.
         ///
         pub fun resolveView(_ view: Type): AnyStruct? {
+            assert(self.ownerAddress == self.owner!.address, message: "The NFT must be owned by the Collection's owner")
+
             switch view {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
@@ -92,7 +97,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
                     )
                 case Type<MetadataViews.Editions>():
                     let editionYear = MetadataViews.Edition(name: "Flowty Wrapped 2023", number: self.id, max: nil)
-                    let editionList: [MetadataViews.Edition] = [editionInfo, editionYear]
+                    let editionList: [MetadataViews.Edition] = [editionYear]
                     return MetadataViews.Editions(
                         editionList
                     )
@@ -161,9 +166,12 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// @return The NFT resource that has been taken out of the collection
         ///
         pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
-            let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
+            // Panics on withdraw, this is not transferrable.
+            assert(false, message: "Flowty Wrapped is not transferrable.")
 
+            let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
             emit Withdraw(id: token.id, from: self.owner?.address)
+
 
             return <-token
         }
@@ -174,6 +182,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// 
         pub fun deposit(token: @NonFungibleToken.NFT) {
             let token <- token as! @FlowtyWrapped.NFT
+            assert(token.ownerAddress == self.owner!.address, message: "The NFT must be owned by the Collection's owner")
 
             let id: UInt64 = token.id
 
@@ -245,7 +254,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     }
 
     pub resource interface MinterPublic {
-        pub fun mintNFT(): @FlowtyWrapped.NFT
+        pub fun mintNFT(ownerAddress: Address): @FlowtyWrapped.NFT
     }
 
     /// Resource that an admin or something similar would own to be
@@ -257,13 +266,14 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         ///
         /// @param recipient: A capability to the collection where the new NFT will be deposited
         ///
-        pub fun mintNFT(): @FlowtyWrapped.NFT {
+        pub fun mintNFT(ownerAddress: Address): @FlowtyWrapped.NFT {
             // we want IDs to start at 1, so we'll increment first
             FlowtyWrapped.totalSupply = FlowtyWrapped.totalSupply + 1
 
             // create a new NFT
             var newNFT <- create NFT(
                 id: FlowtyWrapped.totalSupply,
+                ownerAddress: ownerAddress
             )
 
             return <- newNFT

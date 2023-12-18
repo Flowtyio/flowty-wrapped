@@ -14,6 +14,10 @@ On account name you can add: `emulator-1`
 
 `flow transactions send --signer=emulator-account transactions/mint_flowty_wrapped.cdc '0x01cf0e2f2f715450'`
 
+3 - Withdraw FlowtyWrapped
+
+`flow transactions send --signer=emulator-1 transactions/withdraw_flowty_wrapped.cdc '0x01cf0e2f2f715450'`
+
 4 - Check NFT Edition
 
-`flow scripts execute scripts/get_editions_flowty_wrapped.cdc '0x01cf0e2f2f715450' '2'`
+`flow scripts execute scripts/get_editions_flowty_wrapped.cdc '0x01cf0e2f2f715450' '1'`
