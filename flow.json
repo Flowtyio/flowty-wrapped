@@ -1,9 +1,29 @@
 {
   "contracts": {
-    "FlowtyWrapped": "./contracts/FlowtyWrapped.cdc",
-    "WrappedEditions": "./contracts/WrappedEditions.cdc",
-    "FlowtyRaffles": "./contracts/raffle/FlowtyRaffles.cdc",
-    "FlowtyRaffleSource": "./contracts/raffle/FlowtyRaffleSource.cdc",
+    "FlowtyWrapped": {
+		"source": "./contracts/FlowtyWrapped.cdc",
+		"aliases": {
+			"testing": "0x0000000000000007"
+		}
+	},
+    "WrappedEditions": {
+		"source": "./contracts/WrappedEditions.cdc",
+		"aliases": {
+			"testing": "0x0000000000000007"
+		}
+	},
+    "FlowtyRaffles": {
+		"source": "./contracts/raffle/FlowtyRaffles.cdc",
+		"aliases": {
+			"testing": "0x0000000000000008"
+		}
+	},
+    "FlowtyRaffleSource": {
+		"source": "./contracts/raffle/FlowtyRaffleSource.cdc",
+		"aliases": {
+			"testing": "0x0000000000000009"
+		}
+	},
     "FungibleToken": {
       "source": "./node_modules/@flowtyio/flow-contracts/contracts/FungibleToken.cdc",
       "aliases": {
