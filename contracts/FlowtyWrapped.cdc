@@ -253,14 +253,10 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         return <- create Collection()
     }
 
-    pub resource interface MinterPublic {
-        pub fun mintNFT(ownerAddress: Address): @FlowtyWrapped.NFT
-    }
-
     /// Resource that an admin or something similar would own to be
     /// able to mint new NFTs
     ///
-    pub resource NFTMinter: MinterPublic {
+    pub resource NFTMinter {
         /// Mints a new NFT with a new ID and deposit it in the
         /// recipients collection using their collection reference
         ///
@@ -337,10 +333,6 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
             Type<MetadataViews.NFTCollectionData>(),
             Type<MetadataViews.NFTCollectionDisplay>()
         ]
-    }
-
-    pub fun borrowMinter(): &{MinterPublic} {
-        return self.account.borrow<&{MinterPublic}>(from: self.MinterStoragePath)!
     }
 
     init() {

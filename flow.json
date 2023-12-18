@@ -1,6 +1,11 @@
 {
 	"contracts": {
-		"FlowtyWrapped": "./contracts/FlowtyWrapped.cdc",
+		"FlowtyWrapped": {
+			"source": "./contracts/FlowtyWrapped.cdc",
+			"aliases": {
+				"testing": "0000000000000007"
+			}
+		},
 		"FungibleToken": {
 			"source": "./node_modules/@flowtyio/flow-contracts/contracts/FungibleToken.cdc",
 			"aliases": {

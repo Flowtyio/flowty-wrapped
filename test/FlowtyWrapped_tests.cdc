@@ -14,9 +14,3 @@ pub fun setupManager() {
     txExecutor("setup_flowty_wrapped", [acct], [], nil)
     scriptExecutor("borrow_wrapped_collection.cdc", [acct.address])
 }
-
-// pub fun testMint() {
-//     let acct = Test.createAccount()
-//     txExecutor("mint_flowty_wrapped", [acct], [], nil)
-//     txExecutor("withdraw_flowty_wrapped", [acct], [], "Flowty Wrapped is not transferrable.")
-// }
