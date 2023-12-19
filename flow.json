@@ -3,24 +3,32 @@
     "FlowtyWrapped": {
 		"source": "./contracts/FlowtyWrapped.cdc",
 		"aliases": {
+			"emulator": "0xf8d6e0586b0a20c7",
+			"testnet": "0x8db236eaa5172252",
 			"testing": "0x0000000000000007"
 		}
 	},
     "WrappedEditions": {
 		"source": "./contracts/WrappedEditions.cdc",
 		"aliases": {
+			"emulator": "0xf8d6e0586b0a20c7",
+			"testnet": "0x8db236eaa5172252",
 			"testing": "0x0000000000000007"
 		}
 	},
     "FlowtyRaffles": {
 		"source": "./contracts/raffle/FlowtyRaffles.cdc",
 		"aliases": {
+			"emulator": "0xf8d6e0586b0a20c7",
+			"testnet": "0x894269f57ac04a6e",
 			"testing": "0x0000000000000008"
 		}
 	},
     "FlowtyRaffleSource": {
 		"source": "./contracts/raffle/FlowtyRaffleSource.cdc",
 		"aliases": {
+			"emulator": "0xf8d6e0586b0a20c7",
+			"testnet": "0x894269f57ac04a6e",
 			"testing": "0x0000000000000009"
 		}
 	},
@@ -89,6 +97,14 @@
     "emulator-ft": {
       "address": "ee82856bf20e2aa6",
       "key": "bcdf616be1686d3542dfcee8be0079721828465c5fd9f19a8bb96fe62d585ad1"
+    },
+    "wrapped-testnet": {
+      "address": "0x894269f57ac04a6e",
+      "key": {
+        "type": "google-kms",
+        "hashAlgorithm": "SHA2_256",
+        "resourceID": "projects/flowty-test/locations/global/keyRings/flow/cryptoKeys/wrapped/cryptoKeyVersions/1"
+      }
     }
   },
   "deployments": {
@@ -107,6 +123,12 @@
       "emulator-ft": [
         "FungibleToken"
       ]
-    }
+    },
+	"testnet": {
+		"wrapped-testnet": [
+			"FlowtyWrapped",
+			"WrappedEditions"
+		]
+	}
   }
 }
