@@ -91,6 +91,7 @@ pub contract WrappedEditions {
             var count = 0
             while count < casted.tickets {
                 entries.append(address)
+                count = count + 1
             }
             raffle.addEntries(entries)
 
