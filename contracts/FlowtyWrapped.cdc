@@ -32,7 +32,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     pub struct interface WrappedEdition {
         pub fun getName(): String
         pub fun resolveView(_ t: Type, _ nft: &NFT): AnyStruct?
-        access(account) fun mint(data: {String: AnyStruct}): @NFT
+        access(account) fun mint(address: Address, data: {String: AnyStruct}): @NFT
         pub fun setStatus(_ s: String)
     }
 
@@ -45,17 +45,20 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         pub let id: UInt64
         pub let serial: UInt64
         pub let editionName: String
+        pub let address: Address
         pub let data: {String: AnyStruct}
 
         init(
             id: UInt64,
             serial: UInt64,
             editionName: String,
+            address: Address,
             data: {String: AnyStruct}
         ) {
             self.id = id
             self.serial = serial
             self.editionName = editionName
+            self.address = address
             self.data = data
         }
 
@@ -162,7 +165,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// 
         pub fun deposit(token: @NonFungibleToken.NFT) {
             let token <- token as! @FlowtyWrapped.NFT
-            let nftOwnerAddress = token.data["address"] as! Address
+            let nftOwnerAddress = token.address
 
             assert(nftOwnerAddress == self.owner?.address, message: "The NFT must be owned by the collection owner")
 
@@ -246,12 +249,12 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         ///
         /// @param recipient: A capability to the collection where the new NFT will be deposited
         ///
-        pub fun mintNFT(editionName: String, data: {String: AnyStruct}): @FlowtyWrapped.NFT {
+        pub fun mintNFT(editionName: String, address: Address, data: {String: AnyStruct}): @FlowtyWrapped.NFT {
             // we want IDs to start at 1, so we'll increment first
             FlowtyWrapped.totalSupply = FlowtyWrapped.totalSupply + 1
 
             let edition = FlowtyWrapped.getEdition(editionName)
-            let nft <- edition.mint(data: data)
+            let nft <- edition.mint(address: address, data: data)
 
             return <- nft
         }
@@ -339,8 +342,9 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         id: UInt64,
         serial: UInt64,
         editionName: String,
+        address: Address,
         data: {String: AnyStruct}): @NFT {
-            return <- create NFT(id: id, serial: serial, editionName: editionName, data: data)
+            return <- create NFT(id: id, serial: serial, editionName: editionName, address: address, data: data)
     }
 
     pub fun getEdition(_ name: String): {WrappedEdition} {

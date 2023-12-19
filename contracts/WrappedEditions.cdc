@@ -4,8 +4,7 @@ import "StringUtils"
 
 pub contract WrappedEditions {
     pub struct Wrapped2023Data {
-        pub let address: Address
-        pub let username: String
+        pub let username: String?
         pub let tickets: Int
         
         pub let totalNftsOwned: Int
@@ -15,7 +14,6 @@ pub contract WrappedEditions {
 
         pub fun toTraits(): MetadataViews.Traits {
             let traits: [MetadataViews.Trait] = [
-                WrappedEditions.buildTrait("address", self.address),
                 WrappedEditions.buildTrait("username", self.username),
                 WrappedEditions.buildTrait("tickets", self.tickets),
                 WrappedEditions.buildTrait("totalNftsOwned", self.totalNftsOwned),
@@ -27,8 +25,7 @@ pub contract WrappedEditions {
             return MetadataViews.Traits(traits)
         }
 
-        init(_ address: Address, _ username: String, _ tickets: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
-            self.address = address
+        init(_ username: String?, _ tickets: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
             self.username = username
             self.tickets = tickets
             self.totalNftsOwned = totalNftsOwned
@@ -79,22 +76,11 @@ pub contract WrappedEditions {
             return nil
         }
 
-        pub fun buildIpfsParams(_ data: Wrapped2023Data): String {
-            var s = "?username=".concat(data.username)
-                .concat("&tickets=").concat(data.tickets.toString())
-                .concat("&totalNftsOwned=").concat(data.totalNftsOwned.toString())
-                .concat("&floatCount=").concat(data.floatCount.toString())
-                .concat("&favoriteCollections=").concat(StringUtils.join(data.favoriteCollections, ","))
-                .concat("&collections=").concat(StringUtils.join(data.collections, ","))
-            
-            return s
-        }
-
-        access(account) fun mint(data: {String: AnyStruct}): @FlowtyWrapped.NFT {
+        access(account) fun mint(address: Address, data: {String: AnyStruct}): @FlowtyWrapped.NFT {
             self.supply = self.supply + 1
             let casted = data["wrapped"]! as! Wrapped2023Data
 
-            let nft <- FlowtyWrapped.mint(id: FlowtyWrapped.totalSupply, serial: self.supply, editionName: self.name, data: data)
+            let nft <- FlowtyWrapped.mint(id: FlowtyWrapped.totalSupply, serial: self.supply, editionName: self.name, address: address, data: data)
 
             // allocate raffle tickets
             let manager = FlowtyWrapped.getRaffleManager()
@@ -104,7 +90,7 @@ pub contract WrappedEditions {
             let entries: [Address] = []
             var count = 0
             while count < casted.tickets {
-                entries.append(casted.address)
+                entries.append(address)
             }
             raffle.addEntries(entries)
 
