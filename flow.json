@@ -4,7 +4,7 @@
 		"source": "./contracts/FlowtyWrapped.cdc",
 		"aliases": {
 			"emulator": "0xf8d6e0586b0a20c7",
-			"testnet": "0x8db236eaa5172252",
+			"testnet": "0x60c19518441ca1c4",
 			"testing": "0x0000000000000007"
 		}
 	},
@@ -12,7 +12,7 @@
 		"source": "./contracts/WrappedEditions.cdc",
 		"aliases": {
 			"emulator": "0xf8d6e0586b0a20c7",
-			"testnet": "0x8db236eaa5172252",
+			"testnet": "0x60c19518441ca1c4",
 			"testing": "0x0000000000000007"
 		}
 	},
@@ -99,7 +99,7 @@
       "key": "bcdf616be1686d3542dfcee8be0079721828465c5fd9f19a8bb96fe62d585ad1"
     },
     "wrapped-testnet": {
-      "address": "0x894269f57ac04a6e",
+      "address": "0x60c19518441ca1c4",
       "key": {
         "type": "google-kms",
         "hashAlgorithm": "SHA2_256",
