@@ -289,16 +289,18 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
                         description: "A celebration and statistical review of an exciting year on Flowty and across the Flow blockchain ecosystem.",
                         externalURL: MetadataViews.ExternalURL(FlowtyWrapped.collectionExternalUrl),
                         squareImage: MetadataViews.Media(
-                            file: MetadataViews.HTTPFile(
-                                url: "https://storage.googleapis.com/flowty-images/flowty-logo.jpeg" // TODO: swap this out with the real square image
+                            file: MetadataViews.IPFSFile(
+                                url: "QmdCiwwJ7z2gQecDr6hn4pJj91miWYnFC178o9p6JKftmi",
+                                nil
                             ),
-                            mediaType: "image/jpeg"
+                            mediaType: "image/jpg"
                         ),
                         bannerImage: MetadataViews.Media(
-                            file: MetadataViews.HTTPFile(
-                                url: "https://storage.googleapis.com/flowty-images/flowty-banner.jpeg" // TODO: swap this out with the real banner image
+                            file: MetadataViews.IPFSFile(
+                                url: "QmcLJhJh6yuLAoH6wWKMDS2zUv6myduXQc83zD5xv2V8tA",
+                                nil
                             ),
-                            mediaType: "image/jpeg"
+                            mediaType: "image/jpg"
                         ),
                         socials: {
                             "twitter": MetadataViews.ExternalURL("https://twitter.com/flowty_io")
