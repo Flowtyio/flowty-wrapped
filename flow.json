@@ -61,7 +61,8 @@
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x31ad40c07a2a9788",
-        "mainnet": "0xa340dc0a4ec828ab"
+        "mainnet": "0xa340dc0a4ec828ab",
+		"testing": "0x0000000000000006"
       }
     },
     "StringUtils": {
@@ -69,7 +70,8 @@
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x31ad40c07a2a9788",
-        "mainnet": "0xa340dc0a4ec828ab"
+        "mainnet": "0xa340dc0a4ec828ab",
+		"testing": "0x0000000000000006"
       }
     }
   },
