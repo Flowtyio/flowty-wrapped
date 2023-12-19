@@ -54,13 +54,13 @@ pub fun testMint(){
     let favoriteCollections: [String] = [""]
     let collections: [String] = [""]
 
-   mintFlowtyWrapped(minterAccount: minterAccount, acct: acct.address, username: username, ticket: ticket, totalNftsOwned: totalNftsOwned, floatCount: floatCount, favoriteCollections: favoriteCollections, collections: collections)
+   mintFlowtyWrapped(minterAccount: minterAccount, address: acct.address, username: username, ticket: ticket, totalNftsOwned: totalNftsOwned, floatCount: floatCount, favoriteCollections: favoriteCollections, collections: collections)
 }
 
 pub fun registerEdition(rafflesAcct: Test.Account, removeAfterReveal: Bool, start: UInt64, end: UInt64, baseImageUrl: String, baseHtmlUrl: String) {
     txExecutor("register_edition.cdc", [rafflesAcct], [removeAfterReveal, start, end, baseImageUrl, baseHtmlUrl], nil)
 }
 
-pub fun mintFlowtyWrapped(minterAccount: Test.Account, acct: Address, username: String, ticket: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
-    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
+pub fun mintFlowtyWrapped(minterAccount: Test.Account, address: Address, username: String, ticket: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
+    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
 }

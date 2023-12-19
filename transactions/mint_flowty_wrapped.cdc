@@ -4,7 +4,7 @@ import "NonFungibleToken"
 import "MetadataViews"
 import "WrappedEditions"
 
-transaction(acct: Address, username: String, ticket: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
+transaction(address: Address, username: String, ticket: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
     // local variable for storing the minter reference
     let minter: &FlowtyWrapped.Admin
 
@@ -28,8 +28,8 @@ transaction(acct: Address, username: String, ticket: Int, totalNftsOwned: Int, f
          let data: {String: AnyStruct} = { 
             "wrapped": wrapped2023Data
         }
-        let receiver = getAccount(acct).getCapability<&{NonFungibleToken.CollectionPublic}>(FlowtyWrapped.CollectionPublicPath).borrow()!
-        let nft <- self.minter.mintNFT(editionName: "Flowty Wrapped 2023", data: data )
+        let receiver = getAccount(address).getCapability<&{NonFungibleToken.CollectionPublic}>(FlowtyWrapped.CollectionPublicPath).borrow()!
+        let nft <- self.minter.mintNFT(editionName: "Flowty Wrapped 2023", address: address, data: data )
         receiver.deposit(token: <-nft)
 
     }
