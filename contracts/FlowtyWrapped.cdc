@@ -147,6 +147,8 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// @return The NFT resource that has been taken out of the collection
         ///
         pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
+            assert(false, message: "Flowty Wrapped is not transferrable.")
+
             let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
 
             emit Withdraw(id: token.id, from: self.owner?.address)
@@ -160,6 +162,9 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// 
         pub fun deposit(token: @NonFungibleToken.NFT) {
             let token <- token as! @FlowtyWrapped.NFT
+            let nftOwnerAddress = token.data["address"] as! Address
+
+            assert(nftOwnerAddress == self.owner?.address, message: "The NFT must be owned by the collection owner")
 
             let id: UInt64 = token.id
 

@@ -5,6 +5,7 @@ import "StringUtils"
 pub contract WrappedEditions {
     pub struct Wrapped2023Data {
         pub let address: Address
+        pub let username: String
         pub let tickets: Int
         
         pub let totalNftsOwned: Int
@@ -15,6 +16,7 @@ pub contract WrappedEditions {
         pub fun toTraits(): MetadataViews.Traits {
             let traits: [MetadataViews.Trait] = [
                 WrappedEditions.buildTrait("address", self.address),
+                WrappedEditions.buildTrait("username", self.username),
                 WrappedEditions.buildTrait("tickets", self.tickets),
                 WrappedEditions.buildTrait("totalNftsOwned", self.totalNftsOwned),
                 WrappedEditions.buildTrait("floatCount", self.floatCount),
@@ -25,8 +27,9 @@ pub contract WrappedEditions {
             return MetadataViews.Traits(traits)
         }
 
-        init(_ address: Address, _ tickets: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
+        init(_ address: Address, _ username: String, _ tickets: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
             self.address = address
+            self.username = username
             self.tickets = tickets
             self.totalNftsOwned = totalNftsOwned
             self.floatCount = floatCount
@@ -77,7 +80,7 @@ pub contract WrappedEditions {
         }
 
         pub fun buildIpfsParams(_ data: Wrapped2023Data): String {
-            var s = "?username=".concat(data.address.toString())
+            var s = "?username=".concat(data.username)
                 .concat("&tickets=").concat(data.tickets.toString())
                 .concat("&totalNftsOwned=").concat(data.totalNftsOwned.toString())
                 .concat("&floatCount=").concat(data.floatCount.toString())
