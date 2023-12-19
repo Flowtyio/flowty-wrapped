@@ -4,14 +4,13 @@ import "NonFungibleToken"
 import "MetadataViews"
 import "WrappedEditions"
 
-
 transaction(acct: Address, username: String, ticket: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
-   // local variable for storing the minter reference
+    // local variable for storing the minter reference
     let minter: &FlowtyWrapped.Admin
 
 
     prepare(acct: AuthAccount) {
-       //borrow a reference to the NFTMinter resource in storage
+        //borrow a reference to the NFTMinter resource in storage
         self.minter = acct.borrow<&FlowtyWrapped.Admin>(from: FlowtyWrapped.AdminStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
 
