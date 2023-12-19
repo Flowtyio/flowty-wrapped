@@ -1,8 +1,8 @@
 import "MetadataViews"
 import "FlowtyWrapped"
+import "StringUtils"
 
 pub contract WrappedEditions {
-
     pub struct Wrapped2023Data {
         pub let address: Address
         pub let tickets: Int
@@ -39,11 +39,13 @@ pub contract WrappedEditions {
         pub let name: String
         pub var supply: UInt64
         pub var baseImageUrl: String
+        pub var baseHtmlUrl: String
 
         pub let raffleID: UInt64
         pub var status: String
 
         pub fun resolveView(_ t: Type, _ nft: &FlowtyWrapped.NFT): AnyStruct? {
+            let wrapped = nft.data["wrapped"]! as! Wrapped2023Data
             switch t {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
@@ -68,21 +70,30 @@ pub contract WrappedEditions {
                     )
                     return MetadataViews.Medias([htmlMedia, imageMedia])
                 case Type<MetadataViews.Traits>():
-                    let wrapped = nft.data["wrapped"]! as! Wrapped2023Data
                     return wrapped.toTraits()
             }
 
             return nil
         }
 
+        pub fun buildIpfsParams(_ data: Wrapped2023Data): String {
+            var s = "?username=".concat(data.address.toString())
+                .concat("&tickets=").concat(data.tickets.toString())
+                .concat("&totalNftsOwned=").concat(data.totalNftsOwned.toString())
+                .concat("&floatCount=").concat(data.floatCount.toString())
+                .concat("&favoriteCollections=").concat(StringUtils.join(data.favoriteCollections, ","))
+                .concat("&collections=").concat(StringUtils.join(data.collections, ","))
+            
+            return s
+        }
+
         access(account) fun mint(data: {String: AnyStruct}): @FlowtyWrapped.NFT {
             self.supply = self.supply + 1
             let casted = data["wrapped"]! as! Wrapped2023Data
 
-            // need a create function with access(account) on it
             let nft <- FlowtyWrapped.mint(id: FlowtyWrapped.totalSupply, serial: self.supply, editionName: self.name, data: data)
 
-            // allocate tickets
+            // allocate raffle tickets
             let manager = FlowtyWrapped.getRaffleManager()
             let raffle = manager.borrowRaffle(id: self.raffleID)
                 ?? panic("raffle not found in manager")
@@ -105,11 +116,20 @@ pub contract WrappedEditions {
             self.status = s
         }
 
-        init(name: String, raffleID: UInt64, baseImageUrl: String) {
-            self.name = name
+        pub fun setBaseImageUrl(_ s: String) {
+            self.baseImageUrl = s
+        }
+
+        pub fun setBaseHtmlUrl(_ s: String) {
+            self.baseHtmlUrl = s
+        }
+
+        init(raffleID: UInt64, baseImageUrl: String, baseHtmlUrl: String) {
+            self.name = "Flowty Wrapped 2023"
             self.supply = 0
             self.raffleID = raffleID
             self.baseImageUrl = baseImageUrl
+            self.baseHtmlUrl = baseHtmlUrl
 
             self.status = "CLOSED"
         }
