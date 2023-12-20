@@ -1,39 +1,41 @@
 {
   "contracts": {
     "FlowtyWrapped": {
-		"source": "./contracts/FlowtyWrapped.cdc",
-		"aliases": {
-			"emulator": "0xf8d6e0586b0a20c7",
-			"testnet": "0xd1712bc9e162f9e3",
-			"testing": "0x0000000000000007"
-		}
-	},
+      "source": "./contracts/FlowtyWrapped.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0xd1712bc9e162f9e3",
+        "testing": "0x0000000000000007",
+        "mainnet": "0x592eb32b47d8b85f"
+      }
+    },
     "WrappedEditions": {
-		"source": "./contracts/WrappedEditions.cdc",
-		"aliases": {
-			"emulator": "0xf8d6e0586b0a20c7",
-			"testnet": "0xd1712bc9e162f9e3",
-			"testing": "0x0000000000000007"
-		}
-	},
+      "source": "./contracts/WrappedEditions.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0xd1712bc9e162f9e3",
+        "testing": "0x0000000000000007",
+        "mainnet": "0x592eb32b47d8b85f"
+      }
+    },
     "FlowtyRaffles": {
-		"source": "./contracts/raffle/FlowtyRaffles.cdc",
-		"aliases": {
-			"emulator": "0xf8d6e0586b0a20c7",
-			"testnet": "0x894269f57ac04a6e",
-			"testing": "0x0000000000000008",
-      "mainnet": "0x2fb4614ede95ab2b"
-		}
-	},
+      "source": "./contracts/raffle/FlowtyRaffles.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x894269f57ac04a6e",
+        "testing": "0x0000000000000008",
+        "mainnet": "0x2fb4614ede95ab2b"
+      }
+    },
     "FlowtyRaffleSource": {
-		"source": "./contracts/raffle/FlowtyRaffleSource.cdc",
-		"aliases": {
-			"emulator": "0xf8d6e0586b0a20c7",
-			"testnet": "0x894269f57ac04a6e",
-			"testing": "0x0000000000000009",
-      "mainnet": "0x2fb4614ede95ab2b"
-		}
-	},
+      "source": "./contracts/raffle/FlowtyRaffleSource.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x894269f57ac04a6e",
+        "testing": "0x0000000000000009",
+        "mainnet": "0x2fb4614ede95ab2b"
+      }
+    },
     "FungibleToken": {
       "source": "./node_modules/@flowtyio/flow-contracts/contracts/FungibleToken.cdc",
       "aliases": {
@@ -72,7 +74,7 @@
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x31ad40c07a2a9788",
         "mainnet": "0xa340dc0a4ec828ab",
-		"testing": "0x0000000000000006"
+        "testing": "0x0000000000000006"
       }
     },
     "StringUtils": {
@@ -81,7 +83,7 @@
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x31ad40c07a2a9788",
         "mainnet": "0xa340dc0a4ec828ab",
-		"testing": "0x0000000000000006"
+        "testing": "0x0000000000000006"
       }
     }
   },
@@ -134,7 +136,7 @@
         "FungibleToken"
       ]
     },
-	  "testnet": {
+    "testnet": {
       "wrapped-testnet": [
         "FlowtyWrapped",
         "WrappedEditions"
