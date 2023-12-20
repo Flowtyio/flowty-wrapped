@@ -450,7 +450,6 @@
         requestAnimFrame(update);
       }
 
-      // shim layer with setTimeout fallback
       window.requestAnimFrame = (function () {
         return (
           window.requestAnimationFrame ||
@@ -469,7 +468,6 @@
     })();
 
     document.addEventListener("DOMContentLoaded", function () {
-      // document.getElementById("username-tag");
       var clickMe = document.getElementsByClassName("click-icon")[0];
       var card = document.getElementById("card");
       var cardFront = document.getElementById("card-front");
