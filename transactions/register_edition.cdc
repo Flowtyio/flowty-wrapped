@@ -3,6 +3,7 @@ import "WrappedEditions"
 import "FlowtyRaffles"
 import "FlowtyRaffleSource"
 
+// flow transactions send ./transactions/register_edition.cdc false 1703035065 1705195052 "https://storage.googleapis.com/flowty-wrapped-2023-testnet/" QmcvXz8zZ8hZwgH95zVQ8ZEJUZ92oR9MVjCFVYePyCuvxB -n testnet --signer wrapped-testnet
 transaction(removeAfterReveal: Bool, start: UInt64, end: UInt64, baseImageUrl: String, baseHtmlUrl: String) {
     prepare(acct: AuthAccount) {
         let raffleManager = acct.borrow<&FlowtyRaffles.Manager>(from: FlowtyRaffles.ManagerStoragePath)!

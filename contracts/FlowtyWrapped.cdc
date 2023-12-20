@@ -271,6 +271,10 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         pub fun setCollectionExternalUrl(_ s: String) {
             FlowtyWrapped.collectionExternalUrl = s
         }
+
+        pub fun createAdmin(): @Admin {
+            return <- create Admin()
+        }
     }
 
     /// Function that resolves a metadata view for this contract.

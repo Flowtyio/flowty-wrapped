@@ -65,7 +65,7 @@ pub contract WrappedEditions {
                     )
                 case Type<MetadataViews.Medias>():
                     let htmlMedia = MetadataViews.Media(
-                        file: MetadataViews.IPFSFile("", nil), mediaType: "text/html"
+                        file: MetadataViews.IPFSFile(self.baseHtmlUrl, nil), mediaType: "text/html"
                     )
                     let imageMedia = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(url: self.baseImageUrl.concat(nft.serial.toString())), mediaType: "image/jpeg"

@@ -12,7 +12,6 @@ transaction(address: Address, username: String, ticket: Int, totalNftsOwned: Int
         //borrow a reference to the NFTMinter resource in storage
         self.minter = acct.borrow<&FlowtyWrapped.Admin>(from: FlowtyWrapped.AdminStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
-
     }
 
     execute {
