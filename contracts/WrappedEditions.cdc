@@ -54,7 +54,7 @@ pub contract WrappedEditions {
                         name: "Flowty Wrapped 2023 #".concat(nft.serial.toString()),
                         description: "A celebration and statistical review of an exciting year on Flowty and across the Flow blockchain ecosystem.",
                         thumbnail: MetadataViews.HTTPFile(
-                            url: self.baseImageUrl.concat(nft.serial.toString())
+                            url: self.baseImageUrl.concat(nft.address.toString())
                         )
                     )
                 case Type<MetadataViews.Editions>():
