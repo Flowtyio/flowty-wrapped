@@ -37,7 +37,6 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
 
         access(account) fun setStatus(_ s: String)
         access(account) fun mint(address: Address, data: {String: AnyStruct}): @NFT
-        access(account) fun setParam(key: String, value: AnyStruct)
     }
 
     /// The core resource that represents a Non Fungible Token. 

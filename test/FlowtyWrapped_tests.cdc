@@ -148,3 +148,7 @@ pub fun setupForMint(acct: Test.Account) {
 
     txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
 }
+
+pub fun setEditionParam(key: String, value: String) {
+    txExecutor("set_edition_param.cdc", [minterAccount], ["Flowty Wrapped 2023", key, value], nil)
+}
