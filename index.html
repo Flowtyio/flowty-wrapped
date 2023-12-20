@@ -1,7 +1,10 @@
 <html>
   <head>
     <title>Flowty Wrapped 2023</title>
-    <link rel="icon" href="https://flowty.mypinata.cloud/ipfs/QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/favicon.ico" />
+    <link
+      rel="icon"
+      href="https://flowty.mypinata.cloud/ipfs/QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/favicon.ico"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
@@ -154,9 +157,10 @@
         animation: iconAnimation 1s infinite alternate;
         transition: opacity 0.5s;
         opacity: 50%;
-        &.is-hidden {
-          opacity: 0;
-        }
+      }
+
+      .is-hidden {
+        opacity: 0;
       }
 
       @keyframes iconAnimation {
@@ -345,23 +349,30 @@
       raffleTickets = urlParams.get("raffleTickets");
       customProvider = urlParams.get("customIpfsProvider");
 
-      if(customProvider) {
+      if (customProvider) {
         ipfsURL = customProvider;
       }
 
-      let bgNoSnow = ipfsURL + "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/bgNoSnow.jpg";
+      let bgNoSnow =
+        ipfsURL + "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/bgNoSnow.jpg";
       const wrappedBg = document.querySelector(".wrapped-div");
       wrappedBg.style.backgroundImage = `url(${bgNoSnow})`;
 
-      const cardInsideLeft = ipfsURL + "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/cardInsideLeft.png";
+      const cardInsideLeft =
+        ipfsURL +
+        "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/cardInsideLeft.png";
       const cartPageInside = document.querySelector(".cart-page-inside");
       cartPageInside.style.backgroundImage = `url(${cardInsideLeft})`;
 
-      const cardInsideRight = ipfsURL + "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/cardRightSide.png";
+      const cardInsideRight =
+        ipfsURL +
+        "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/cardRightSide.png";
       const cartPageBottom = document.querySelector(".cart-page-bottom");
       cartPageBottom.style.backgroundImage = `url(${cardInsideRight})`;
 
-      const wrappedCard = ipfsURL + "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/wrappedCard.png";
+      const wrappedCard =
+        ipfsURL +
+        "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/wrappedCard.png";
       const cartPageOutside = document.querySelector(".cart-page-outside");
       cartPageOutside.style.backgroundImage = `url(${wrappedCard})`;
 
