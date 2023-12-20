@@ -105,6 +105,14 @@
         "hashAlgorithm": "SHA2_256",
         "resourceID": "projects/flowty-test/locations/global/keyRings/flow/cryptoKeys/wrapped/cryptoKeyVersions/1"
       }
+    },
+    "wrapped-mainnet": {
+      "address": "0x592eb32b47d8b85f",
+      "key": {
+        "type": "google-kms",
+        "hashAlgorithm": "SHA2_256",
+        "resourceID": "projects/flowty-prod/locations/global/keyRings/flow/cryptoKeys/wrapped/cryptoKeyVersions/1"
+      }
     }
   },
   "deployments": {
@@ -124,11 +132,17 @@
         "FungibleToken"
       ]
     },
-	"testnet": {
-		"wrapped-testnet": [
-			"FlowtyWrapped",
-			"WrappedEditions"
-		]
-	}
+	  "testnet": {
+      "wrapped-testnet": [
+        "FlowtyWrapped",
+        "WrappedEditions"
+      ]
+    },
+    "mainnet": {
+      "wrapped-mainnet": [
+        "FlowtyWrapped",
+        "WrappedEditions"
+      ]
+    }
   }
 }
