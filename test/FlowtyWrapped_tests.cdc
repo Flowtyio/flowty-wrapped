@@ -45,6 +45,11 @@ pub fun testGetRaffleManager(){
     scriptExecutor("raffle/borrow_raffle_manager.cdc", [rafflesAcct.address])
 }
 
+pub fun testSetCollectionExternalUrl() {
+    let baseHtmlUrl: String = "https://flowty.io/asset/0x0000000000000007/FlowtyWrappedTEST"
+    txExecutor("set_collection_external_url.cdc", [rafflesAcct], [baseHtmlUrl], nil)
+}
+
 pub fun testMint() {
     let acct = Test.createAccount()
     setupForMint(acct: acct)   
