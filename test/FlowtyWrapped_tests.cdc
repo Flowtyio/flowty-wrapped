@@ -2,6 +2,7 @@ import Test
 import "test_helpers.cdc"
 
 import "FlowtyWrapped"
+import "MetadataViews"
 
 pub  let rafflesAcct = Test.getAccount(Address(0x0000000000000007))
 pub  let minterAccount = Test.getAccount(Address(0x0000000000000007))
@@ -42,6 +43,21 @@ pub fun testSetupManager() {
 
 pub fun testMint() {
     let acct = Test.createAccount()
+    setupForMint(acct: acct)   
+}
+
+pub fun testGetEditions() {
+    let acct = Test.createAccount()
+    setupForMint(acct: acct)
+    let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
+
+    let castedResult = result! as! [UInt64]
+    var nftID1 = castedResult[0]
+
+    scriptExecutor("get_editions_flowty_wrapped.cdc", [acct.address, nftID1])
+}
+
+pub fun setupForMint(acct: Test.Account) {
 
     txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
 
@@ -52,7 +68,7 @@ pub fun testMint() {
     let favoriteCollections: [String] = [""]
     let collections: [String] = [""]
 
-    mintFlowtyWrapped(address: acct.address, username: username, ticket: ticket, totalNftsOwned: totalNftsOwned, floatCount: floatCount, favoriteCollections: favoriteCollections, collections: collections)
+    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
 }
 
 pub fun testSingleMint() {
@@ -67,7 +83,7 @@ pub fun testSingleMint() {
     let favoriteCollections: [String] = [""]
     let collections: [String] = [""]
 
-    mintFlowtyWrapped(address: acct.address, username: username, ticket: ticket, totalNftsOwned: totalNftsOwned, floatCount: floatCount, favoriteCollections: favoriteCollections, collections: collections)
+    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
 
     // now try to mint again, this should fail
     txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], "address has already been minted")
@@ -75,8 +91,4 @@ pub fun testSingleMint() {
 
 pub fun registerEdition(rafflesAcct: Test.Account, removeAfterReveal: Bool, start: UInt64, end: UInt64, baseImageUrl: String, baseHtmlUrl: String) {
     txExecutor("register_edition.cdc", [rafflesAcct], [removeAfterReveal, start, end, baseImageUrl, baseHtmlUrl], nil)
-}
-
-pub fun mintFlowtyWrapped(address: Address, username: String, ticket: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
-    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
 }
