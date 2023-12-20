@@ -122,6 +122,19 @@ pub contract WrappedEditions {
             self.baseHtmlUrl = s
         }
 
+        access(account) fun setParam(key: String, value: AnyStruct) {
+            switch key {
+                case "baseHtmlUrl":
+                    let v = value as! String
+                    self.setBaseHtmlUrl(v)
+                    break
+                case "baseImageUrl":
+                    let v = value as! String
+                    self.setBaseImageUrl(v)
+                    break
+            }
+        }
+
         init(raffleID: UInt64, baseImageUrl: String, baseHtmlUrl: String) {
             self.name = "Flowty Wrapped 2023"
             self.supply = 0
