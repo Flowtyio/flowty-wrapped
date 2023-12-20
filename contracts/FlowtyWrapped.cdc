@@ -32,8 +32,9 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     pub struct interface WrappedEdition {
         pub fun getName(): String
         pub fun resolveView(_ t: Type, _ nft: &NFT): AnyStruct?
+
+        access(account) fun setStatus(_ s: String)
         access(account) fun mint(address: Address, data: {String: AnyStruct}): @NFT
-        pub fun setStatus(_ s: String)
     }
 
     /// The core resource that represents a Non Fungible Token. 
@@ -89,13 +90,13 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         pub fun resolveView(_ view: Type): AnyStruct? {
             switch view {
                 case Type<MetadataViews.Display>():
-                    let edition = FlowtyWrapped.getEdition(self.editionName)
+                    let edition = FlowtyWrapped.getEditionRef(self.editionName)
                     return edition.resolveView(view, &self as &NFT)
                 case Type<MetadataViews.Medias>():
-                    let edition = FlowtyWrapped.getEdition(self.editionName)
+                    let edition = FlowtyWrapped.getEditionRef(self.editionName)
                     return edition.resolveView(view, &self as &NFT)
                 case Type<MetadataViews.Editions>():
-                    let edition = FlowtyWrapped.getEdition(self.editionName)
+                    let edition = FlowtyWrapped.getEditionRef(self.editionName)
                     return edition.resolveView(view, &self as &NFT)
                 case Type<MetadataViews.Serial>():
                     return MetadataViews.Serial(
@@ -110,7 +111,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
                 case Type<MetadataViews.NFTCollectionDisplay>():
                     return FlowtyWrapped.resolveView(view)
                 case Type<MetadataViews.Traits>():
-                    let edition = FlowtyWrapped.getEdition(self.editionName)
+                    let edition = FlowtyWrapped.getEditionRef(self.editionName)
                     return edition.resolveView(view, &self as &NFT)
             }
             return nil
@@ -253,7 +254,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
             // we want IDs to start at 1, so we'll increment first
             FlowtyWrapped.totalSupply = FlowtyWrapped.totalSupply + 1
 
-            let edition = FlowtyWrapped.getEdition(editionName)
+            let edition = FlowtyWrapped.getEditionRef(editionName)
             let nft <- edition.mint(address: address, data: data)
 
             return <- nft
@@ -345,6 +346,13 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         address: Address,
         data: {String: AnyStruct}): @NFT {
             return <- create NFT(id: id, serial: serial, editionName: editionName, address: address, data: data)
+    }
+
+    access(contract) fun getEditionRef(_ name: String): &{WrappedEdition} {
+        pre {
+            self.editions[name] != nil: "no edition found with given name"
+        }
+        return (&self.editions[name] as &{WrappedEdition}?)!
     }
 
     pub fun getEdition(_ name: String): {WrappedEdition} {

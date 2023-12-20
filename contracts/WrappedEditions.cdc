@@ -44,6 +44,8 @@ pub contract WrappedEditions {
         pub let raffleID: UInt64
         pub var status: String
 
+        pub let mintedAddresses: {Address: Bool}
+
         pub fun resolveView(_ t: Type, _ nft: &FlowtyWrapped.NFT): AnyStruct? {
             let wrapped = nft.data["wrapped"]! as! Wrapped2023Data
             switch t {
@@ -77,6 +79,10 @@ pub contract WrappedEditions {
         }
 
         access(account) fun mint(address: Address, data: {String: AnyStruct}): @FlowtyWrapped.NFT {
+            pre {
+                self.mintedAddresses[address] == nil: "address has already been minted"
+            }
+
             self.supply = self.supply + 1
             let casted = data["wrapped"]! as! Wrapped2023Data
 
@@ -95,6 +101,7 @@ pub contract WrappedEditions {
             }
             raffle.addEntries(entries)
 
+            self.mintedAddresses[address] = true
             return <- nft
         }
 
@@ -122,6 +129,7 @@ pub contract WrappedEditions {
             self.baseHtmlUrl = baseHtmlUrl
 
             self.status = "CLOSED"
+            self.mintedAddresses = {}
         }
     }
 
