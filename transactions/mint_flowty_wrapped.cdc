@@ -8,7 +8,6 @@ transaction(address: Address, username: String, ticket: Int, totalNftsOwned: Int
     // local variable for storing the minter reference
     let minter: &FlowtyWrapped.Admin
 
-
     prepare(acct: AuthAccount) {
         //borrow a reference to the NFTMinter resource in storage
         self.minter = acct.borrow<&FlowtyWrapped.Admin>(from: FlowtyWrapped.AdminStoragePath)
