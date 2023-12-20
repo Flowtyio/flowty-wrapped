@@ -41,6 +41,10 @@ pub fun testSetupManager() {
     txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
 }
 
+pub fun testGetRaffleManager(){
+    scriptExecutor("raffle/borrow_raffle_manager.cdc", [rafflesAcct.address])
+}
+
 pub fun testMint() {
     let acct = Test.createAccount()
     setupForMint(acct: acct)   
