@@ -188,6 +188,32 @@
         background: rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(25px);
       }
+
+      .is-naughty-svg {
+        position: absolute;
+        top: -5px;
+        left: 48px;
+      }
+
+      .is-nice-svg {
+        position: absolute;
+        top: -5px;
+        left: -11px;
+      }
+
+      @supports (-webkit-backdrop-filter: blur(1px)) {
+        .is-naughty-svg {
+          position: absolute;
+          top: 88px;
+          left: 82px;
+        }
+
+        .is-nice-svg {
+          position: absolute;
+          top: 88px;
+          left: 27px;
+        }
+      }
     </style>
   </head>
   <body class="sky">
@@ -232,8 +258,8 @@
                   height="49"
                   viewBox="0 0 72 49"
                   fill="none"
-                  style="position: absolute; top: -5px; left: -11px"
                   id="is-nice"
+                  class="is-nice-svg"
                 >
                   <path
                     d="M6.74077 40.3286C16.3123 53.2046 69.2007 31.0665 67.9401 17.0724C65.9534 -4.98135 16.5333 10.314 11.2642 19.1177C11.0691 19.4437 11.2386 19.904 11.4319 19.7435C28.3405 5.6993 64.9722 1.89313 65.9898 17.595C65.6002 29.8684 11.5494 53.0572 7.13276 37.4859C4.22473 27.2333 26.8008 10.7933 45.8395 9.00454C46.3498 8.73091 45.7715 8.2873 45.1427 8.32887C24.7313 10.2628 -1.25235 27.7387 6.74077 40.3286Z"
@@ -250,8 +276,8 @@
                   height="49"
                   viewBox="0 0 72 49"
                   fill="none"
-                  style="position: absolute; top: -5px; left: 48px"
                   id="is-naughty"
+                  class="is-naughty-svg"
                 >
                   <path
                     d="M6.74077 40.3286C16.3123 53.2046 69.2007 31.0665 67.9401 17.0724C65.9534 -4.98135 16.5333 10.314 11.2642 19.1177C11.0691 19.4437 11.2386 19.904 11.4319 19.7435C28.3405 5.6993 64.9722 1.89313 65.9898 17.595C65.6002 29.8684 11.5494 53.0572 7.13276 37.4859C4.22473 27.2333 26.8008 10.7933 45.8395 9.00454C46.3498 8.73091 45.7715 8.2873 45.1427 8.32887C24.7313 10.2628 -1.25235 27.7387 6.74077 40.3286Z"
@@ -357,6 +383,7 @@
         height = masthead.clientHeight;
         canvas.width = width;
         canvas.height = height;
+        canvas.style.width = "100%";
         ctx.fillStyle = "#FFF";
 
         var wasActive = active;
