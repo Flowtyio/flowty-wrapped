@@ -34,6 +34,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     pub struct interface WrappedEdition {
         pub fun getName(): String
         pub fun resolveView(_ t: Type, _ nft: &NFT): AnyStruct?
+        pub fun getEditionSupply(): UInt64
 
         access(account) fun setStatus(_ s: String)
         access(account) fun mint(address: Address, data: {String: AnyStruct}): @NFT
@@ -262,6 +263,11 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
             let nft <- edition.mint(address: address, data: data)
 
             return <- nft
+        }
+
+        pub fun getEdition(editionName: String): AnyStruct{
+            let edition = FlowtyWrapped.getEditionRef(editionName)
+            return edition
         }
 
         pub fun registerEdition(_ edition: {WrappedEdition}) {
