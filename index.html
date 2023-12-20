@@ -290,28 +290,7 @@
             </p>
             <p style="margin: 0px">
               For information and winner announcements, follow along at
-              <span
-                id="flowty-twitter-link"
-                style="
-                  text-decoration: underline;
-                  color: #04e5a3;
-                  font-size: 12px;
-                "
-              >
-                @flowty_io (Twitter)
-              </span>
-              or join our
-              <span
-                id="flowty-discord-link"
-                style="
-                  text-decoration: underline;
-                  color: #04e5a3;
-                  font-size: 12px;
-                "
-              >
-                discord
-              </span>
-              !
+              @flowty_io (Twitter) or join our discord !
             </p>
             <div style="display: flex; flex-direction: column; gap: 3px">
               <p style="text-align: right; margin: 0px">Happy Holidays!!!</p>
@@ -347,16 +326,6 @@
       const raffleTicketsTag1 = document.getElementById("raffleTickets-tag-1");
       const raffleTicketsTag2 = document.getElementById("raffleTickets-tag-2");
       const niceNaughtyTag = document.getElementById("nice-naughty-tag");
-      const flowtyTwitterLink = document.getElementById("flowty-twitter-link");
-      const flowtyDiscordLink = document.getElementById("flowty-discord-link");
-
-      flowtyTwitterLink.addEventListener("click", () => {
-        window.open("https://twitter.com/flowty_io", "_blank");
-      });
-
-      flowtyDiscordLink.addEventListener("click", () => {
-        window.open("https://discord.gg/flowty", "_blank");
-      });
 
       if (raffleTickets > 0) {
         document.getElementById("is-naughty").style.display = "none";
@@ -471,10 +440,8 @@
       var clickMe = document.getElementsByClassName("click-icon")[0];
       var card = document.getElementById("card");
       var cardFront = document.getElementById("card-front");
-      console.log("WAS HERE");
 
       card.addEventListener("click", function () {
-        console.log("WAS HERE 2");
         card.classList.toggle("is-opened");
         cardFront.classList.toggle("is-opened-card-page-front");
         clickMe.classList.toggle("is-hidden");
