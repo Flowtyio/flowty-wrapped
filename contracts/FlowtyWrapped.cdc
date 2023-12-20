@@ -367,6 +367,10 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         return self.editions[name] ?? panic("no edition found with given name")
     }
 
+    pub fun getAccountAddress(): Address {
+        return self.account.address
+    }
+
     init() {
         // Initialize the total supply
         self.totalSupply = 0
