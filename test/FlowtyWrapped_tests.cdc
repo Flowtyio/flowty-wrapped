@@ -57,6 +57,26 @@ pub fun testGetEditions() {
     scriptExecutor("get_editions_flowty_wrapped.cdc", [acct.address, nftID1])
 }
 
+pub fun testDepositToWrongAddressFails() {
+    let acct = Test.createAccount()
+    let wrongAccount = Test.createAccount()
+    
+
+    txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
+    txExecutor("setup_flowty_wrapped.cdc", [wrongAccount], [], nil)
+
+
+    let username: String = "user1"
+    let ticket: Int = 1
+    let totalNftsOwned: Int = 1
+    let floatCount: Int = 1
+    let favoriteCollections: [String] = [""]
+    let collections: [String] = [""]
+
+    txExecutor("fail_mint_to_wrong_account.cdc", [minterAccount], [acct.address, wrongAccount.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], "The NFT must be owned by the collection owner")
+
+}
+
 pub fun setupForMint(acct: Test.Account) {
 
     txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
