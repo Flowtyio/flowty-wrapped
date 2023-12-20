@@ -64,8 +64,9 @@ pub contract WrappedEditions {
                         editionList
                     )
                 case Type<MetadataViews.Medias>():
+                    let params = "?username=".concat(wrapped.username ?? (nft.owner != nil ? nft.owner!.address.toString() : "")).concat("&raffleTickets=").concat(wrapped.tickets.toString())
                     let htmlMedia = MetadataViews.Media(
-                        file: MetadataViews.IPFSFile(self.baseHtmlUrl, nil), mediaType: "text/html"
+                        file: MetadataViews.IPFSFile(self.baseHtmlUrl.concat(params), nil), mediaType: "text/html"
                     )
                     let imageMedia = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(url: self.baseImageUrl.concat(nft.serial.toString())), mediaType: "image/jpeg"

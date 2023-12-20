@@ -30,8 +30,8 @@ pub fun setup() {
     let removeAfterReveal: Bool = true
     let start: UInt64 = 0
     let end: UInt64 = 100
-    let baseImageUrl: String = ""
-    let baseHtmlUrl: String = "https://flowty.io/asset/0x0000000000000007/FlowtyWrapped"
+    let baseImageUrl: String = "https://example.com/image/"
+    let baseHtmlUrl: String = "QmVZv2s6sozWWb4dEcANaszqKWLQbieYJLysK7NGq3RGdJ"
     registerEdition(rafflesAcct: Test.getAccount(Address(0x0000000000000007)), removeAfterReveal: removeAfterReveal, start: start, end: end, baseImageUrl: baseImageUrl, baseHtmlUrl: baseHtmlUrl)
     
 }
@@ -41,7 +41,7 @@ pub fun testSetupManager() {
     txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
 }
 
-pub fun testGetRaffleManager(){
+pub fun testGetRaffleManager() {
     scriptExecutor("raffle/borrow_raffle_manager.cdc", [rafflesAcct.address])
 }
 
@@ -81,20 +81,6 @@ pub fun testDepositToWrongAddressFails() {
 
 }
 
-pub fun setupForMint(acct: Test.Account) {
-
-    txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
-
-    let username: String = "user1"
-    let ticket: Int = 1
-    let totalNftsOwned: Int = 1
-    let floatCount: Int = 1
-    let favoriteCollections: [String] = [""]
-    let collections: [String] = [""]
-
-    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
-}
-
 pub fun testSingleMint() {
     let acct = Test.createAccount()
 
@@ -126,6 +112,39 @@ pub fun testWithdrawFails() {
     txExecutor("withdraw_nft.cdc", [acct], [acct.address, acct2.address, nftID1], "Flowty Wrapped is not transferrable")
 }
 
+pub fun testMediasIpfsUrl() {
+    let acct = Test.createAccount()
+    setupForMint(acct: acct)
+    let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
+
+    let castedResult = result! as! [UInt64]
+    var nftID = castedResult[0]
+
+    let medias = getMedias(addr: acct.address, nftID: nftID)
+
+    let ipfsMedia = medias.items[0]
+    let ipfsUrl = ipfsMedia.file.uri()
+    assert(ipfsUrl == "ipfs://QmVZv2s6sozWWb4dEcANaszqKWLQbieYJLysK7NGq3RGdJ?username=user1&raffleTickets=1", message: "unexpected ipfs url")
+}
+
 pub fun registerEdition(rafflesAcct: Test.Account, removeAfterReveal: Bool, start: UInt64, end: UInt64, baseImageUrl: String, baseHtmlUrl: String) {
     txExecutor("register_edition.cdc", [rafflesAcct], [removeAfterReveal, start, end, baseImageUrl, baseHtmlUrl], nil)
+}
+
+pub fun getMedias(addr: Address, nftID: UInt64): MetadataViews.Medias {
+    return scriptExecutor("get_medias.cdc", [addr, nftID])! as! MetadataViews.Medias
+}
+
+pub fun setupForMint(acct: Test.Account) {
+
+    txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
+
+    let username: String = "user1"
+    let ticket: Int = 1
+    let totalNftsOwned: Int = 1
+    let floatCount: Int = 1
+    let favoriteCollections: [String] = [""]
+    let collections: [String] = [""]
+
+    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
 }
