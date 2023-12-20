@@ -105,11 +105,7 @@
         "hashAlgorithm": "SHA2_256",
         "resourceID": "projects/flowty-test/locations/global/keyRings/flow/cryptoKeys/wrapped/cryptoKeyVersions/1"
       }
-    },
-	"testnet-minter": {
-		"address": "0x241d62cdfcf9656b",
-		"key": "e15cc2e96404ce4efa654fc237ccae3f8765c626cd3f3df0f244f167859b2612"
-	}
+    }
   },
   "deployments": {
     "emulator": {
