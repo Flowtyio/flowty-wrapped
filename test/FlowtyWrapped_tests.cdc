@@ -113,6 +113,19 @@ pub fun testSingleMint() {
     txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], "address has already been minted")
 }
 
+pub fun testWithdrawFails() {
+    let acct = Test.createAccount()
+    let acct2 = Test.createAccount()
+    setupForMint(acct: acct)
+
+    let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
+
+    let castedResult = result! as! [UInt64]
+    var nftID1 = castedResult[0]
+
+    txExecutor("withdraw_nft.cdc", [acct], [acct.address, acct2.address, nftID1], "Flowty Wrapped is not transferrable")
+}
+
 pub fun registerEdition(rafflesAcct: Test.Account, removeAfterReveal: Bool, start: UInt64, end: UInt64, baseImageUrl: String, baseHtmlUrl: String) {
     txExecutor("register_edition.cdc", [rafflesAcct], [removeAfterReveal, start, end, baseImageUrl, baseHtmlUrl], nil)
 }
