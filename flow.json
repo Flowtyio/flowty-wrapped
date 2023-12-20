@@ -21,7 +21,8 @@
 		"aliases": {
 			"emulator": "0xf8d6e0586b0a20c7",
 			"testnet": "0x894269f57ac04a6e",
-			"testing": "0x0000000000000008"
+			"testing": "0x0000000000000008",
+      "mainnet": "0x2fb4614ede95ab2b"
 		}
 	},
     "FlowtyRaffleSource": {
@@ -29,7 +30,8 @@
 		"aliases": {
 			"emulator": "0xf8d6e0586b0a20c7",
 			"testnet": "0x894269f57ac04a6e",
-			"testing": "0x0000000000000009"
+			"testing": "0x0000000000000009",
+      "mainnet": "0x2fb4614ede95ab2b"
 		}
 	},
     "FungibleToken": {
