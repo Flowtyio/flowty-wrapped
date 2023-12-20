@@ -1,7 +1,7 @@
 <html>
   <head>
     <title>Flowty Wrapped 2023</title>
-    <link rel="icon" href="./favicon.ico" />
+    <link rel="icon" href="https://flowty.mypinata.cloud/ipfs/QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
@@ -113,7 +113,6 @@
       }
 
       .cart-page-outside {
-        background-image: url(./wrappedCard.png);
         background-size: contain;
         width: 100%;
         height: 100%;
@@ -126,7 +125,6 @@
         transform: rotateY(-180deg);
         border-right: none !important;
         background-position: 0px 80px;
-        background-image: url(./cardInsideLeft.png);
         background-size: contain;
         background-position: center;
         width: 100%;
@@ -139,7 +137,6 @@
         z-index: 1;
         border-left: none !important;
         background-position: -22px 80px;
-        background-image: url(./cardRightSide.png);
         background-size: contain;
         background-position: center;
         width: 100%;
@@ -338,14 +335,37 @@
   <script>
     let username;
     let raffleTickets;
+    let ipfsURL = "https://flowty.mypinata.cloud/ipfs/";
 
+    
     window.addEventListener("load", async () => {
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
-
+      
       username = urlParams.get("username");
       raffleTickets = urlParams.get("raffleTickets");
+      customProvider = urlParams.get("customIpfsProvider");
+      
+      if(customProvider) {
+        ipfsURL = customProvider;
+      }
 
+      let bgNoSnow = ipfsURL + "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/bgNoSnow.jpg";
+      const wrappedBg = document.querySelector(".wrapped-div");
+      wrappedBg.style.backgroundImage = `url(${bgNoSnow})`;
+
+      const cardInsideLeft = ipfsURL + "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/cardInsideLeft.png";
+      const cartPageInside = document.querySelector(".cart-page-inside");
+      cartPageInside.style.backgroundImage = `url(${cardInsideLeft})`;
+
+      const cardInsideRight = ipfsURL + "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/cardRightSide.png";
+      const cartPageBottom = document.querySelector(".cart-page-bottom");
+      cartPageBottom.style.backgroundImage = `url(${cardInsideRight})`;
+
+      const wrappedCard = ipfsURL + "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/wrappedCard.png";
+      const cartPageOutside = document.querySelector(".cart-page-outside");
+      cartPageOutside.style.backgroundImage = `url(${wrappedCard})`;
+      
       const usernameTag = document.getElementById("username-tag");
       const usernameTag1 = document.getElementById("username-tag-1");
       const raffleTicketsTag = document.getElementById("raffleTickets-tag");
