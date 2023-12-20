@@ -16,6 +16,8 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     /// The event that is emitted when the contract is created
     pub event ContractInitialized()
 
+    pub event CollectionCreated(uuid: UInt64)
+
     /// The event that is emitted when an NFT is withdrawn from a Collection
     pub event Withdraw(id: UInt64, from: Address?)
 
@@ -236,7 +238,9 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     /// @return The new Collection resource
     ///
     pub fun createEmptyCollection(): @NonFungibleToken.Collection {
-        return <- create Collection()
+        let c <- create Collection()
+        emit CollectionCreated(uuid: c.uuid)
+        return <- c
     }
 
     pub resource interface AdminPublic {}
