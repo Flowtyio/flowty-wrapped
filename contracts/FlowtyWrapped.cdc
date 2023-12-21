@@ -35,6 +35,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         pub fun getName(): String
         pub fun resolveView(_ t: Type, _ nft: &NFT): AnyStruct?
         pub fun getEditionSupply(): UInt64
+        pub fun getRaffleID(): UInt64
 
         access(account) fun setStatus(_ s: String)
         access(account) fun mint(address: Address, data: {String: AnyStruct}): @NFT

@@ -4,6 +4,7 @@ import "test_helpers.cdc"
 import "FlowtyWrapped"
 import "MetadataViews"
 import "WrappedEditions"
+import "FlowtyRaffles"
 
 pub  let rafflesAcct = Test.getAccount(Address(0x0000000000000007))
 pub  let minterAccount = Test.getAccount(Address(0x0000000000000007))
@@ -29,8 +30,8 @@ pub fun setup() {
 
     // register a test wrapped edition
     let removeAfterReveal: Bool = true
-    let start: UInt64 = 0
-    let end: UInt64 = 100
+    let start: UInt64? = nil
+    let end: UInt64? = nil
     let baseImageUrl: String = "https://example.com/image/"
     let baseHtmlUrl: String = "QmVZv2s6sozWWb4dEcANaszqKWLQbieYJLysK7NGq3RGdJ"
     registerEdition(rafflesAcct: Test.getAccount(Address(0x0000000000000007)), removeAfterReveal: removeAfterReveal, start: start, end: end, baseImageUrl: baseImageUrl, baseHtmlUrl: baseHtmlUrl)
@@ -203,7 +204,33 @@ pub fun testIpfsUrlNoName() {
     assert(ipfsUrl == "ipfs://QmVZv2s6sozWWb4dEcANaszqKWLQbieYJLysK7NGq3RGdJ?username=".concat(acct.address.toString()).concat("&raffleTickets=1"), message: "unexpected ipfs url")
 }
 
-pub fun registerEdition(rafflesAcct: Test.Account, removeAfterReveal: Bool, start: UInt64, end: UInt64, baseImageUrl: String, baseHtmlUrl: String) {
+pub fun testDrawRaffle() {
+    let acct = Test.createAccount()
+    let username: String = "user1"
+
+    let editionName = "Flowty Wrapped 2023"
+    let raffleID = scriptExecutor("raffle/get_raffle_id.cdc", [minterAccount.address, editionName])! as! UInt64
+    
+    setupForMint(acct: acct, name: username)
+    let entries: AnyStruct = scriptExecutor("raffle/get_raffle_entries.cdc", [minterAccount.address, raffleID])
+    let castedEntries = entries! as! [AnyStruct]
+    
+    assert(castedEntries.length >= 1, message: "no entries")
+    assert(castedEntries.removeLast() as! Address == acct.address)
+
+    let drawing = drawFromRaffle(rafflesAcct, raffleID)
+
+    var winnerIsFromEntryPool = false
+    for e in castedEntries {
+        let c = (e as! Address).toString()
+        if c == drawing{
+            winnerIsFromEntryPool = true
+        }
+    }
+    assert(winnerIsFromEntryPool)
+}
+
+pub fun registerEdition(rafflesAcct: Test.Account, removeAfterReveal: Bool, start: UInt64?, end: UInt64?, baseImageUrl: String, baseHtmlUrl: String) {
     txExecutor("register_edition.cdc", [rafflesAcct], [removeAfterReveal, start, end, baseImageUrl, baseHtmlUrl], nil)
 }
 
@@ -231,4 +258,11 @@ pub fun setupForMint(acct: Test.Account, name: String) {
     let collections: [String] = [""]
 
     txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, name, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
+}
+
+pub fun drawFromRaffle(_ signer: Test.Account, _ id: UInt64): String {
+    txExecutor("raffle/draw_from_raffle.cdc", [signer], [id], nil)
+
+    let drawingEvent = Test.eventsOfType(Type<FlowtyRaffles.RaffleReceiptRevealed>()).removeLast() as! FlowtyRaffles.RaffleReceiptRevealed
+    return drawingEvent.value ?? ""
 }
