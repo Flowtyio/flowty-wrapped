@@ -209,16 +209,16 @@ pub fun testDrawRaffle() {
     let username: String = "user1"
 
     let editionName = "Flowty Wrapped 2023"
-    let raffleID = scriptExecutor("raffle/get_raffle_id.cdc", [minterAccount.address, editionName])! as! UInt64
+    let createEvent = (Test.eventsOfType(Type<FlowtyRaffles.RaffleCreated>()).removeLast() as! FlowtyRaffles.RaffleCreated)
     
     setupForMint(acct: acct, name: username)
-    let entries: AnyStruct = scriptExecutor("raffle/get_raffle_entries.cdc", [minterAccount.address, raffleID])
+    let entries: AnyStruct = scriptExecutor("raffle/get_raffle_entries.cdc", [minterAccount.address, createEvent.raffleID])
     let castedEntries = entries! as! [AnyStruct]
     
     assert(castedEntries.length >= 1, message: "no entries")
     assert(castedEntries.removeLast() as! Address == acct.address)
 
-    let drawing = drawFromRaffle(rafflesAcct, raffleID)
+    let drawing = drawFromRaffle(rafflesAcct, createEvent.raffleID)
 
     var winnerIsFromEntryPool = false
     for e in castedEntries {

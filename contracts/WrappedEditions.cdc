@@ -88,10 +88,6 @@ pub contract WrappedEditions {
             return self.supply
         }
 
-        pub fun getRaffleID(): UInt64 {
-            return self.raffleID
-        }
-
         access(account) fun mint(address: Address, data: {String: AnyStruct}): @FlowtyWrapped.NFT {
             pre {
                 self.mintedAddresses[address] == nil: "address has already been minted"
