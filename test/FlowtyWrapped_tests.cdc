@@ -3,6 +3,7 @@ import "test_helpers.cdc"
 
 import "FlowtyWrapped"
 import "MetadataViews"
+import "WrappedEditions"
 
 pub  let rafflesAcct = Test.getAccount(Address(0x0000000000000007))
 pub  let minterAccount = Test.getAccount(Address(0x0000000000000007))
@@ -61,6 +62,35 @@ pub fun testGetEditions() {
     scriptExecutor("get_editions_flowty_wrapped.cdc", [acct.address, nftID1])
 }
 
+pub fun testEditionResolveView() {
+    let acct = Test.createAccount()
+
+    let currentEditionNumber = getEditionNumber()
+
+    let expectedEditionName = "Flowty Wrapped 2023"
+    let expectedEditionNumber: UInt64 = currentEditionNumber + 1
+    let expectedEditionMax = nil
+
+    setupForMint(acct: acct)
+
+    let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
+
+    let castedResult = result! as! [UInt64]
+    var nftID1 = castedResult[0]
+
+    let res: AnyStruct? = scriptExecutor("get_editions_flowty_wrapped.cdc", [acct.address, nftID1])
+    let castedTest = res! as! MetadataViews.Editions
+    let Edition = castedTest.infoList[0]
+
+    let name = Edition.name!
+    let number = Edition.number
+    let max = Edition.max
+
+    assert(name == expectedEditionName, message: "Edition name is not expected result")
+    assert(number == expectedEditionNumber, message: "NFT serial is not expected result")
+    assert(max == expectedEditionMax, message: "max should be nil")
+}
+
 pub fun testDepositToWrongAddressFails() {
     let acct = Test.createAccount()
     let wrongAccount = Test.createAccount()
@@ -79,6 +109,20 @@ pub fun testDepositToWrongAddressFails() {
 
     txExecutor("fail_mint_to_wrong_account.cdc", [minterAccount], [acct.address, wrongAccount.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], "The NFT must be owned by the collection owner")
 
+}
+
+
+    
+pub fun testBorrowNFT() {
+    let acct = Test.createAccount()
+    setupForMint(acct: acct)
+
+    let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
+
+    let castedResult = result! as! [UInt64]
+    var nftID1 = castedResult[0]
+
+    scriptExecutor("borrow_nft.cdc", [acct.address, nftID1])
 }
 
 pub fun testSingleMint() {
@@ -133,6 +177,15 @@ pub fun registerEdition(rafflesAcct: Test.Account, removeAfterReveal: Bool, star
 
 pub fun getMedias(addr: Address, nftID: UInt64): MetadataViews.Medias {
     return scriptExecutor("get_medias.cdc", [addr, nftID])! as! MetadataViews.Medias
+}
+
+pub fun getEditionNumber(): UInt64{
+    let editionName = "Flowty Wrapped 2023"
+    let res = scriptExecutor("get_total_edition_supply.cdc", [minterAccount.address, editionName])
+
+    let editionNumber = res! as! UInt64
+    return editionNumber
+
 }
 
 pub fun setupForMint(acct: Test.Account) {
