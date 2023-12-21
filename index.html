@@ -528,7 +528,11 @@
         var wasActive = active;
         active = width > 100;
 
-        if (!wasActive && active) requestAnimFrame(update);
+        if (!wasActive) {
+          if (active) {
+            requestAnimFrame(update);
+          }
+        }
       }
 
       var Snowflake = function () {
