@@ -43,6 +43,7 @@
       }
 
       .card {
+        display: none;
         width: 350px;
         height: 470px;
         perspective: 1500px;
@@ -301,7 +302,7 @@
               margin-top: 20px;
               font-size: 14px;
               font-weight: 400;
-              text-align: center;
+              text-align: left;
             "
           >
             <p style="margin: 0px">
@@ -312,16 +313,25 @@
               raffle tickets.
             </p>
             <p style="margin: 0px">
-              Raffle prizes include $FLOW, NFTs from your favorite collections
-              on Flow and much more!!
+              Raffle prizes include
+              <span style="font-weight: 900; text-decoration: underline"
+                >5,000+ FLOW Tokens</span
+              >, NFTs from your favorite collections and much more!
             </p>
             <p style="margin: 0px">
               For information and winner announcements, follow along at
-              @flowty_io (Twitter) or join our discord !
+              @flowty_io (Twitter) or join our discord!
             </p>
-            <div style="display: flex; flex-direction: column; gap: 3px">
-              <p style="text-align: right; margin: 0px">Happy Holidays!!!</p>
-              <p style="text-align: right; margin: 0px">The Flowty Team</p>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+                margin-top: 5px;
+              "
+            >
+              <p style="text-align: left; margin: 0px">Happy Holidays!</p>
+              <p style="text-align: left; margin: 0px">- The Flowty Team</p>
             </div>
           </div>
         </div>
@@ -353,28 +363,67 @@
         ipfsURL = customProvider;
       }
 
-      let bgNoSnow =
+      const bgNoSnow =
         ipfsURL + "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/bgNoSnow.jpg";
-      const wrappedBg = document.querySelector(".wrapped-div");
-      wrappedBg.style.backgroundImage = `url(${bgNoSnow})`;
+      // const wrappedBg = document.querySelector(".wrapped-div");
+      // wrappedBg.style.backgroundImage = `url(${bgNoSnow})`;
 
       const cardInsideLeft =
         ipfsURL +
         "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/cardInsideLeft.png";
-      const cartPageInside = document.querySelector(".cart-page-inside");
-      cartPageInside.style.backgroundImage = `url(${cardInsideLeft})`;
+      // const cartPageInside = document.querySelector(".cart-page-inside");
+      // cartPageInside.style.backgroundImage = `url(${cardInsideLeft})`;
 
       const cardInsideRight =
         ipfsURL +
         "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/cardRightSide.png";
-      const cartPageBottom = document.querySelector(".cart-page-bottom");
-      cartPageBottom.style.backgroundImage = `url(${cardInsideRight})`;
+      // const cartPageBottom = document.querySelector(".cart-page-bottom");
+      // cartPageBottom.style.backgroundImage = `url(${cardInsideRight})`;
 
       const wrappedCard =
         ipfsURL +
         "QmctZJrzKu3ctyFLeZZAS2FkU6uLKMZNUkZbY24H2wjFzJ/wrappedCard.png";
-      const cartPageOutside = document.querySelector(".cart-page-outside");
-      cartPageOutside.style.backgroundImage = `url(${wrappedCard})`;
+      // const cartPageOutside = document.querySelector(".cart-page-outside");
+      // cartPageOutside.style.backgroundImage = `url(${wrappedCard})`;
+
+      function loadImage(url) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = url;
+        });
+      }
+
+      Promise.all([
+        loadImage(bgNoSnow),
+        loadImage(cardInsideLeft),
+        loadImage(cardInsideRight),
+        loadImage(wrappedCard),
+      ])
+        .then(() => {
+          const wrappedBg = document.querySelector(".wrapped-div");
+          wrappedBg.style.backgroundImage = `url(${bgNoSnow})`;
+
+          const cartPageInside = document.querySelector(".cart-page-inside");
+          cartPageInside.style.backgroundImage = `url(${cardInsideLeft})`;
+
+          const cartPageBottom = document.querySelector(".cart-page-bottom");
+          cartPageBottom.style.backgroundImage = `url(${cardInsideRight})`;
+
+          const cartPageOutside = document.querySelector(".cart-page-outside");
+          cartPageOutside.style.backgroundImage = `url(${wrappedCard})`;
+
+          setTimeout(() => {
+            const card = document.querySelector(".card");
+            if (card) {
+              card.style.display = "block";
+            }
+          }, 500);
+        })
+        .catch((err) => {
+          console.log("loading image error", err);
+        });
 
       const usernameTag = document.getElementById("username-tag");
       const usernameTag1 = document.getElementById("username-tag-1");
@@ -391,11 +440,23 @@
         niceNaughtyTag.innerText = "NAUGHTY";
       }
 
-      usernameTag.innerText = `${username}`;
-      usernameTag1.innerText = `${username}`;
-      raffleTicketsTag.innerText = `${raffleTickets}`;
-      raffleTicketsTag1.innerText = `${raffleTickets} RAFFLE TICKETS`;
-      raffleTicketsTag2.innerText = `[${raffleTickets}]`;
+      if (username) {
+        usernameTag.innerText = `${username}`;
+        usernameTag1.innerText = `${username}`;
+      } else {
+        usernameTag.innerText = `Flowty User`;
+        usernameTag1.innerText = `Flowty User`;
+      }
+
+      if (raffleTickets) {
+        raffleTicketsTag.innerText = `${raffleTickets}`;
+        raffleTicketsTag1.innerText = `${raffleTickets} RAFFLE TICKETS`;
+        raffleTicketsTag2.innerText = `[${raffleTickets}]`;
+      } else {
+        raffleTicketsTag.innerText = `0`;
+        raffleTicketsTag1.innerText = `0 RAFFLE TICKETS`;
+        raffleTicketsTag2.innerText = `[0]`;
+      }
     });
 
     (function () {
