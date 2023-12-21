@@ -143,20 +143,6 @@ pub fun testSingleMint() {
     txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], "address has already been minted")
 }
 
-pub fun setupForMint(acct: Test.Account) {
-
-    txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
-
-    let username: String = "mintTest"
-    let ticket: Int = 1
-    let totalNftsOwned: Int = 1
-    let floatCount: Int = 1
-    let favoriteCollections: [String] = [""]
-    let collections: [String] = [""]
-
-    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
-}
-
 pub fun testWithdrawFails() {
     let acct = Test.createAccount()
     let acct2 = Test.createAccount()
@@ -200,4 +186,18 @@ pub fun getEditionNumber(): UInt64{
     let editionNumber = res! as! UInt64
     return editionNumber
 
+}
+
+pub fun setupForMint(acct: Test.Account) {
+
+    txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
+
+    let username: String = "user1"
+    let ticket: Int = 1
+    let totalNftsOwned: Int = 1
+    let floatCount: Int = 1
+    let favoriteCollections: [String] = [""]
+    let collections: [String] = [""]
+
+    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
 }
