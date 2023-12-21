@@ -225,6 +225,7 @@ pub fun testDrawRaffle() {
         let c = (e as! Address).toString()
         if c == drawing{
             winnerIsFromEntryPool = true
+            break
         }
     }
     assert(winnerIsFromEntryPool)
