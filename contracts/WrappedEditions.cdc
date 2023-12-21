@@ -71,7 +71,7 @@ pub contract WrappedEditions {
 
                     let params = "?username=".concat(username).concat("&raffleTickets=").concat(wrapped.tickets.toString())
                     let htmlMedia = MetadataViews.Media(
-                        file: MetadataViews.IPFSFile("QmVZv2s6sozWWb4dEcANaszqKWLQbieYJLysK7NGq3RGdJ".concat(params), nil), mediaType: "text/html"
+                        file: MetadataViews.IPFSFile("QmfPkn13gbBNVK6bKtdqyUEa92bmqDy8aVQqGj3pByyyoP".concat(params), nil), mediaType: "text/html"
                     )
                     let imageMedia = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(url: self.baseImageUrl.concat(nft.serial.toString())), mediaType: "image/jpeg"
