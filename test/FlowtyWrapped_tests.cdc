@@ -48,12 +48,14 @@ pub fun testGetRaffleManager() {
 
 pub fun testMint() {
     let acct = Test.createAccount()
-    setupForMint(acct: acct)   
+    let username: String = "user1"
+    setupForMint(acct: acct, name: username)   
 }
 
 pub fun testGetEditions() {
     let acct = Test.createAccount()
-    setupForMint(acct: acct)
+    let username: String = "user1"
+    setupForMint(acct: acct, name: username)
     let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
 
     let castedResult = result! as! [UInt64]
@@ -71,7 +73,8 @@ pub fun testEditionResolveView() {
     let expectedEditionNumber: UInt64 = currentEditionNumber + 1
     let expectedEditionMax = nil
 
-    setupForMint(acct: acct)
+    let username: String = "user1"
+    setupForMint(acct: acct, name: username)
 
     let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
 
@@ -115,7 +118,8 @@ pub fun testDepositToWrongAddressFails() {
     
 pub fun testBorrowNFT() {
     let acct = Test.createAccount()
-    setupForMint(acct: acct)
+    let username: String = "user1"
+    setupForMint(acct: acct, name: username)
 
     let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
 
@@ -146,7 +150,8 @@ pub fun testSingleMint() {
 pub fun testWithdrawFails() {
     let acct = Test.createAccount()
     let acct2 = Test.createAccount()
-    setupForMint(acct: acct)
+    let username: String = "user1"
+    setupForMint(acct: acct, name: username)
 
     let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
 
@@ -158,7 +163,8 @@ pub fun testWithdrawFails() {
 
 pub fun testMediasIpfsUrl() {
     let acct = Test.createAccount()
-    setupForMint(acct: acct)
+    let username: String = "user1"
+    setupForMint(acct: acct, name: username)
     let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
 
     let castedResult = result! as! [UInt64]
@@ -169,6 +175,22 @@ pub fun testMediasIpfsUrl() {
     let ipfsMedia = medias.items[0]
     let ipfsUrl = ipfsMedia.file.uri()
     assert(ipfsUrl == "ipfs://QmVZv2s6sozWWb4dEcANaszqKWLQbieYJLysK7NGq3RGdJ?username=user1&raffleTickets=1", message: "unexpected ipfs url")
+}
+
+pub fun testIpfsUrlNoName() {
+    let acct = Test.createAccount()
+    let username: String = ""
+    setupForMint(acct: acct, name: username)
+    let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
+
+    let castedResult = result! as! [UInt64]
+    var nftID = castedResult[0]
+
+    let medias = getMedias(addr: acct.address, nftID: nftID)
+
+    let ipfsMedia = medias.items[0]
+    let ipfsUrl = ipfsMedia.file.uri()
+    assert(ipfsUrl == "ipfs://QmVZv2s6sozWWb4dEcANaszqKWLQbieYJLysK7NGq3RGdJ?username=".concat(acct.address.toString()).concat("&raffleTickets=1"), message: "unexpected ipfs url")
 }
 
 pub fun registerEdition(rafflesAcct: Test.Account, removeAfterReveal: Bool, start: UInt64, end: UInt64, baseImageUrl: String, baseHtmlUrl: String) {
@@ -188,16 +210,15 @@ pub fun getEditionNumber(): UInt64{
 
 }
 
-pub fun setupForMint(acct: Test.Account) {
+pub fun setupForMint(acct: Test.Account, name: String) {
 
     txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
 
-    let username: String = "user1"
     let ticket: Int = 1
     let totalNftsOwned: Int = 1
     let floatCount: Int = 1
     let favoriteCollections: [String] = [""]
     let collections: [String] = [""]
 
-    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
+    txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, name, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
 }
