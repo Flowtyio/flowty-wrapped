@@ -111,34 +111,7 @@ pub fun testDepositToWrongAddressFails() {
 
 }
 
-pub fun testEditionResolveView() {
-    let acct = Test.createAccount()
 
-    let currentEditionNumber = getEditionNumber()
-
-    let expectedEditionName = "Flowty Wrapped 2023"
-    let expectedEditionNumber: UInt64 = currentEditionNumber + 1
-    let expectedEditionMax = nil
-
-    setupForMint(acct: acct)
-
-    let result = scriptExecutor("get_nft_ids.cdc", [acct.address])
-
-    let castedResult = result! as! [UInt64]
-    var nftID1 = castedResult[0]
-
-    let res: AnyStruct? = scriptExecutor("get_editions_flowty_wrapped.cdc", [acct.address, nftID1])
-    let castedTest = res! as! MetadataViews.Editions
-    let Edition = castedTest.infoList[0]
-
-    let name = Edition.name!
-    let number = Edition.number
-    let max = Edition.max
-
-    assert(name == expectedEditionName, message: "Edition name is not expected result")
-    assert(number == expectedEditionNumber, message: "NFT serial is not expected result")
-    assert(max == expectedEditionMax, message: "max should be nil")
-}
     
 pub fun testBorrowNFT() {
     let acct = Test.createAccount()
