@@ -46,6 +46,16 @@ pub fun testGetRaffleManager() {
     scriptExecutor("raffle/borrow_raffle_manager.cdc", [rafflesAcct.address])
 }
 
+pub fun testSetCollectionExternalUrl() {
+    let baseHtmlUrl: String = "https://flowty.io/asset/0x0000000000000007/FlowtyWrappedTEST"
+
+    txExecutor("set_collection_external_url.cdc", [rafflesAcct], [baseHtmlUrl], nil)
+
+    let result = scriptExecutor("get_collection_external_url.cdc", [])
+    let castedResult = result! as! String
+    assert(castedResult == baseHtmlUrl, message: "baseHtmlUrl does not match expected")
+}
+
 pub fun testMint() {
     let acct = Test.createAccount()
     let username: String = "user1"
