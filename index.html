@@ -86,6 +86,89 @@
         z-index: 2;
       }
 
+      @media only screen and (max-width: 768px) {
+        .card-page {
+          width: calc(350px * 0.4) !important;
+          height: calc(470px * 0.4) !important;
+          font-size: 10px !important;
+        }
+
+        .card {
+          width: calc(350px * 0.4) !important;
+          height: calc(470px * 0.4) !important;
+          font-size: 10px !important;
+        }
+
+        .card-content {
+          padding: 6px !important;
+          margin-top: 5px !important;
+          font-size: 8px !important;
+        }
+
+        .nice-naughty-box {
+          padding: 6px !important;
+          gap: 2px !important;
+          font-size: 6px !important;
+        }
+
+        .is-naughty-svg {
+          top: -15px !important;
+          left: 28px !important;
+          width: 48px !important;
+        }
+
+        .is-nice-svg {
+          top: -14px !important;
+          width: 35px !important;
+          left: -4px !important;
+        }
+
+        .card-message {
+          margin-top: 5px !important;
+          font-size: 5px !important;
+        }
+
+        .front-raffle-tickets-num {
+          font-size: 6px !important;
+          padding-top: 7px !important;
+          padding-left: 4px !important;
+        }
+
+        .front-username {
+          text-align: right;
+          padding-right: 7px !important;
+          font-size: 6px !important;
+        }
+      }
+
+      .card-message {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 20px;
+        font-size: 14px;
+        font-weight: 400;
+        text-align: left;
+      }
+
+      .front-raffle-tickets-num {
+        padding-left: 10px;
+        padding-top: 18px;
+        font-size: 12px;
+        font-weight: 900;
+        color: #04e5a3;
+        opacity: 70%;
+      }
+
+      .front-username {
+        text-align: right;
+        padding-right: 10px;
+        font-size: 12px;
+        font-weight: 900;
+        color: #04e5a3;
+        opacity: 70%;
+      }
+
       @keyframes cardIn {
         0% {
           opacity: 0;
@@ -189,6 +272,7 @@
         border: 1px solid rgba(255, 255, 255, 0.24);
         background: rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(25px);
+        font-size: 12px;
       }
 
       .is-naughty-svg {
@@ -223,28 +307,8 @@
     <div class="card" id="card">
       <div class="card-page cart-page-front" id="card-front">
         <div class="card-page cart-page-outside">
-          <p
-            style="
-              padding-left: 10px;
-              padding-top: 18px;
-              font-size: 12px;
-              font-weight: 900;
-              color: #04e5a3;
-              opacity: 70%;
-            "
-            id="raffleTickets-tag-1"
-          ></p>
-          <p
-            style="
-              text-align: right;
-              padding-right: 10px;
-              font-size: 12px;
-              font-weight: 900;
-              color: #04e5a3;
-              opacity: 70%;
-            "
-            id="username-tag-1"
-          ></p>
+          <p class="front-raffle-tickets-num" id="raffleTickets-tag-1"></p>
+          <p class="front-username" id="username-tag-1"></p>
         </div>
         <div class="card-page cart-page-inside"></div>
       </div>
@@ -252,7 +316,7 @@
         <div class="card-content">
           <p>Dear <span id="username-tag" style="font-weight: 700"></span>,</p>
           <div class="nice-naughty-box">
-            <div style="display: flex; gap: 4px; font-size: 12px">
+            <div style="display: flex; gap: 4px">
               <span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -289,22 +353,12 @@
                 <span>Naughty</span>
               </div>
             </div>
-            <p style="font-size: 12px; line-height: 0px">
+            <p style="line-height: 0px">
               Flowty Wrapped Raffle Tickets:
               <span style="font-weight: 700" id="raffleTickets-tag"></span>
             </p>
           </div>
-          <div
-            style="
-              display: flex;
-              flex-direction: column;
-              gap: 8px;
-              margin-top: 20px;
-              font-size: 14px;
-              font-weight: 400;
-              text-align: left;
-            "
-          >
+          <div class="card-message">
             <p style="margin: 0px">
               You are on the
               <span id="nice-naughty-tag" style="font-weight: 700"></span> list
