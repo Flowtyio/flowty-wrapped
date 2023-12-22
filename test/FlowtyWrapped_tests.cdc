@@ -212,11 +212,11 @@ pub fun testDrawRaffle() {
     let createEvent = (Test.eventsOfType(Type<FlowtyRaffles.RaffleCreated>()).removeLast() as! FlowtyRaffles.RaffleCreated)
     
     setupForMint(acct: acct, name: username)
-    let entries: AnyStruct = scriptExecutor("raffle/get_raffle_entries.cdc", [minterAccount.address, createEvent.raffleID])
-    let castedEntries = entries! as! [AnyStruct]
+    let entries: AnyStruct = scriptExecutor("raffle/get_raffle_entries.cdc", [minterAccount.address, createEvent.raffleID])!
+    let castedEntries = entries as! [AnyStruct]
     
     assert(castedEntries.length >= 1, message: "no entries")
-    assert(castedEntries.removeLast() as! Address == acct.address)
+    assert(castedEntries[castedEntries.length - 1] as! Address == acct.address)
 
     let drawing = drawFromRaffle(rafflesAcct, createEvent.raffleID)
 
