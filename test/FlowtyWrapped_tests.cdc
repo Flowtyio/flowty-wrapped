@@ -33,7 +33,7 @@ pub fun setup() {
     let start: UInt64? = nil
     let end: UInt64? = nil
     let baseImageUrl: String = "https://example.com/image/"
-    let baseHtmlUrl: String = "QmfPkn13gbBNVK6bKtdqyUEa92bmqDy8aVQqGj3pByyyoP"
+    let baseHtmlUrl: String = "QmRfVR98oe6qxeWFcnY9tfM2CLUJg3rvxbBPS5LjYwp69Z"
     registerEdition(rafflesAcct: Test.getAccount(Address(0x0000000000000007)), removeAfterReveal: removeAfterReveal, start: start, end: end, baseImageUrl: baseImageUrl, baseHtmlUrl: baseHtmlUrl)
     
 }
@@ -185,7 +185,7 @@ pub fun testMediasIpfsUrl() {
 
     let ipfsMedia = medias.items[0]
     let ipfsUrl = ipfsMedia.file.uri()
-    assert(ipfsUrl == "ipfs://QmfPkn13gbBNVK6bKtdqyUEa92bmqDy8aVQqGj3pByyyoP?username=user1&raffleTickets=1", message: "unexpected ipfs url")
+    assert(ipfsUrl == "ipfs://QmRfVR98oe6qxeWFcnY9tfM2CLUJg3rvxbBPS5LjYwp69Z?username=user1&raffleTickets=1", message: "unexpected ipfs url")
 }
 
 pub fun testIpfsUrlNoName() {
@@ -201,7 +201,7 @@ pub fun testIpfsUrlNoName() {
 
     let ipfsMedia = medias.items[0]
     let ipfsUrl = ipfsMedia.file.uri()
-    assert(ipfsUrl == "ipfs://QmfPkn13gbBNVK6bKtdqyUEa92bmqDy8aVQqGj3pByyyoP?username=".concat(acct.address.toString()).concat("&raffleTickets=1"), message: "unexpected ipfs url")
+    assert(ipfsUrl == "ipfs://QmRfVR98oe6qxeWFcnY9tfM2CLUJg3rvxbBPS5LjYwp69Z?username=".concat(acct.address.toString()).concat("&raffleTickets=1"), message: "unexpected ipfs url")
 }
 
 pub fun testDrawRaffle() {
@@ -212,11 +212,11 @@ pub fun testDrawRaffle() {
     let createEvent = (Test.eventsOfType(Type<FlowtyRaffles.RaffleCreated>()).removeLast() as! FlowtyRaffles.RaffleCreated)
     
     setupForMint(acct: acct, name: username)
-    let entries: AnyStruct = scriptExecutor("raffle/get_raffle_entries.cdc", [minterAccount.address, createEvent.raffleID])
-    let castedEntries = entries! as! [AnyStruct]
+    let entries: AnyStruct = scriptExecutor("raffle/get_raffle_entries.cdc", [minterAccount.address, createEvent.raffleID])!
+    let castedEntries = entries as! [AnyStruct]
     
     assert(castedEntries.length >= 1, message: "no entries")
-    assert(castedEntries.removeLast() as! Address == acct.address)
+    assert(castedEntries[castedEntries.length - 1] as! Address == acct.address)
 
     let drawing = drawFromRaffle(rafflesAcct, createEvent.raffleID)
 
