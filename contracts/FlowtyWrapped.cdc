@@ -411,8 +411,8 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         self.account.save(<-manager, to: FlowtyRaffles.ManagerStoragePath)
         self.account.link<&FlowtyRaffles.Manager{FlowtyRaffles.ManagerPublic}>(FlowtyRaffles.ManagerPublicPath, target: FlowtyRaffles.ManagerStoragePath)
 
-        self.collectionExternalUrl = "https://flowty.io/collection/".concat(self.account.address.toString()).concat("FlowtyWrapped")
-        self.nftExternalBaseUrl = "https://flowty.io/asset/".concat(self.account.address.toString()).concat("FlowtyWrapped")
+        self.collectionExternalUrl = "https://flowty.io/collection/".concat(self.account.address.toString()).concat("/FlowtyWrapped")
+        self.nftExternalBaseUrl = "https://flowty.io/asset/".concat(self.account.address.toString()).concat("/FlowtyWrapped")
         self.editions = {}
     }
 }
