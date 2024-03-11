@@ -85,6 +85,15 @@
         "mainnet": "0xa340dc0a4ec828ab",
         "testing": "0x0000000000000006"
       }
+    },
+    "Burner": {
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/Burner.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0xf8d6e0586b0a20c7",
+        "mainnet": "0xf8d6e0586b0a20c7",
+        "testing": "0x0000000000000006"
+      }
     }
   },
   "networks": {
@@ -130,7 +139,8 @@
         "FlowtyRaffles",
         "FlowtyRaffleSource",
         "ArrayUtils",
-        "StringUtils"
+        "StringUtils",
+        "Burner"
       ],
       "emulator-ft": [
         "FungibleToken"
