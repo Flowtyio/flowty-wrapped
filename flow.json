@@ -137,8 +137,6 @@
         "WrappedEditions",
         "FlowtyRaffles",
         "FlowtyRaffleSource",
-        "ArrayUtils",
-        "StringUtils",
         "Burner"
       ],
       "emulator-ft": [

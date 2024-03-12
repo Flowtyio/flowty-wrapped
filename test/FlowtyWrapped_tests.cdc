@@ -16,12 +16,6 @@ access(all) fun setup() {
     err = Test.deployContract(name: "FlowtyRaffleSource", path: "../contracts/raffle/FlowtyRaffleSource.cdc", arguments: [])
     Test.expect(err, Test.beNil())
 
-    err = Test.deployContract(name: "ArrayUtils", path: "../node_modules/@flowtyio/flow-contracts/contracts/flow-utils/ArrayUtils.cdc", arguments: [])
-    Test.expect(err, Test.beNil())
-
-    err = Test.deployContract(name: "StringUtils", path: "../node_modules/@flowtyio/flow-contracts/contracts/flow-utils/StringUtils.cdc", arguments: [])
-    Test.expect(err, Test.beNil())
-
     err = Test.deployContract(name: "FlowtyWrapped", path: "../contracts/FlowtyWrapped.cdc", arguments: [])
     Test.expect(err, Test.beNil())
 
