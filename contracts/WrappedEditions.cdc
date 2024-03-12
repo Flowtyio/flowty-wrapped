@@ -1,18 +1,17 @@
 import "MetadataViews"
 import "FlowtyWrapped"
-import "StringUtils"
 
-pub contract WrappedEditions {
-    pub struct Wrapped2023Data {
-        pub let username: String?
-        pub let tickets: Int
+access(all) contract WrappedEditions {
+    access(all) struct Wrapped2023Data {
+        access(all) let username: String?
+        access(all) let tickets: Int
         
-        pub let totalNftsOwned: Int
-        pub let floatCount: Int
-        pub let favoriteCollections: [String] // type identifier of each collection
-        pub let collections: [String]  // type identifier of each collection
+        access(all) let totalNftsOwned: Int
+        access(all) let floatCount: Int
+        access(all) let favoriteCollections: [String] // type identifier of each collection
+        access(all) let collections: [String]  // type identifier of each collection
 
-        pub fun toTraits(): MetadataViews.Traits {
+        access(all) fun toTraits(): MetadataViews.Traits {
             let traits: [MetadataViews.Trait] = [
                 WrappedEditions.buildTrait("username", self.username),
                 WrappedEditions.buildTrait("tickets", self.tickets),
@@ -35,18 +34,18 @@ pub contract WrappedEditions {
         }
     }
 
-    pub struct Edition2023: FlowtyWrapped.WrappedEdition {
-        pub let name: String
-        pub var supply: UInt64
-        pub var baseImageUrl: String
-        pub var baseHtmlUrl: String
+    access(all) struct Edition2023: FlowtyWrapped.WrappedEdition {
+        access(all) let name: String
+        access(all) var supply: UInt64
+        access(all) var baseImageUrl: String
+        access(all) var baseHtmlUrl: String
 
-        pub let raffleID: UInt64
-        pub var status: String
+        access(all) let raffleID: UInt64
+        access(all) var status: String
 
-        pub let mintedAddresses: {Address: Bool}
+        access(all) let mintedAddresses: {Address: Bool}
 
-        pub fun resolveView(_ t: Type, _ nft: &FlowtyWrapped.NFT): AnyStruct? {
+        access(all) view fun resolveView(_ t: Type, _ nft: &FlowtyWrapped.NFT): AnyStruct? {
             let wrapped = nft.data["wrapped"]! as! Wrapped2023Data
             switch t {
                 case Type<MetadataViews.Display>():
@@ -71,20 +70,20 @@ pub contract WrappedEditions {
 
                     let params = "?username=".concat(username).concat("&raffleTickets=").concat(wrapped.tickets.toString())
                     let htmlMedia = MetadataViews.Media(
-                        file: MetadataViews.IPFSFile("QmRfVR98oe6qxeWFcnY9tfM2CLUJg3rvxbBPS5LjYwp69Z".concat(params), nil), mediaType: "text/html"
+                        file: MetadataViews.IPFSFile(cid: "QmfPkn13gbBNVK6bKtdqyUEa92bmqDy8aVQqGj3pByyyoP".concat(params), path: nil), mediaType: "text/html"
                     )
                     let imageMedia = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(url: self.baseImageUrl.concat(nft.serial.toString())), mediaType: "image/jpeg"
                     )
                     return MetadataViews.Medias([htmlMedia, imageMedia])
-                case Type<MetadataViews.Traits>():
-                    return wrapped.toTraits()
+                // case Type<MetadataViews.Traits>():
+                    // return wrapped.toTraits()
             }
 
             return nil
         }
 
-        pub fun getEditionSupply(): UInt64 {
+        access(all) view fun getEditionSupply(): UInt64 {
             return self.supply
         }
 
@@ -99,9 +98,9 @@ pub contract WrappedEditions {
             let nft <- FlowtyWrapped.mint(id: FlowtyWrapped.totalSupply, serial: self.supply, editionName: self.name, address: address, data: data)
 
             // allocate raffle tickets
-            let manager = FlowtyWrapped.getRaffleManager()
-            let raffle = manager.borrowRaffle(id: self.raffleID)
-                ?? panic("raffle not found in manager")
+            // let manager = FlowtyWrapped.getRaffleManager()
+            // let raffle = manager.borrowRaffle(id: self.raffleID)
+            //     ?? panic("raffle not found in manager")
             
             let entries: [Address] = []
             var count = 0
@@ -109,25 +108,25 @@ pub contract WrappedEditions {
                 entries.append(address)
                 count = count + 1
             }
-            raffle.addEntries(entries)
+            // raffle.addEntries(entries)
 
             self.mintedAddresses[address] = true
             return <- nft
         }
 
-        pub fun getName(): String {
+        access(all) view fun getName(): String {
             return self.name
         }
 
-        pub fun setStatus(_ s: String) {
+        access(all) fun setStatus(_ s: String) {
             self.status = s
         }
 
-        pub fun setBaseImageUrl(_ s: String) {
+        access(all) fun setBaseImageUrl(_ s: String) {
             self.baseImageUrl = s
         }
 
-        pub fun setBaseHtmlUrl(_ s: String) {
+        access(all) fun setBaseHtmlUrl(_ s: String) {
             self.baseHtmlUrl = s
         }
 
@@ -143,7 +142,7 @@ pub contract WrappedEditions {
         }
     }
 
-    pub fun buildTrait(_ name: String, _ value: AnyStruct): MetadataViews.Trait {
+    access(all) fun buildTrait(_ name: String, _ value: AnyStruct): MetadataViews.Trait {
         return MetadataViews.Trait(name: name, value: value, displayType: nil, rarity: nil)
     }
 }

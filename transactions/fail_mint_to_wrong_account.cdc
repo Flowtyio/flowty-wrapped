@@ -8,9 +8,9 @@ transaction(address: Address, wrongAccount:Address, username: String, ticket: In
     // local variable for storing the minter reference
     let minter: &FlowtyWrapped.Admin
 
-    prepare(acct: AuthAccount) {
+    prepare(acct: auth(Storage) &Account) {
         //borrow a reference to the NFTMinter resource in storage
-        self.minter = acct.borrow<&FlowtyWrapped.Admin>(from: FlowtyWrapped.AdminStoragePath)
+        self.minter = acct.storage.borrow<&FlowtyWrapped.Admin>(from: FlowtyWrapped.AdminStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
     }
 
@@ -26,7 +26,7 @@ transaction(address: Address, wrongAccount:Address, username: String, ticket: In
          let data: {String: AnyStruct} = { 
             "wrapped": wrapped2023Data
         }
-        let receiver = getAccount(wrongAccount).getCapability<&{NonFungibleToken.CollectionPublic}>(FlowtyWrapped.CollectionPublicPath).borrow()!
+        let receiver = getAccount(wrongAccount).capabilities.borrow<&{NonFungibleToken.CollectionPublic}>(FlowtyWrapped.CollectionPublicPath)!
         let nft <- self.minter.mintNFT(editionName: "Flowty Wrapped 2023", address: address, data: data )
         receiver.deposit(token: <-nft)
 

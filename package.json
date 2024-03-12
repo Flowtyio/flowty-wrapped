@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/Flowtyio/flowty-wrapped#readme",
   "dependencies": {
-    "@flowtyio/flow-contracts": "^0.0.18"
+    "@flowtyio/flow-contracts": "^0.1.0-beta.4"
   }
 }

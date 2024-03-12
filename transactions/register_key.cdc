@@ -10,7 +10,7 @@ import Crypto
 */
 
 transaction(publicKey: String, signatureAlgorithm: UInt8, hashAlgorithm: UInt8, weight: UFix64) {
-    prepare(signer: AuthAccount) {
+    prepare(signer: auth(AddKey) &Account) {
         let key = PublicKey(
             publicKey: publicKey.decodeHex(),
             signatureAlgorithm: SignatureAlgorithm(rawValue: signatureAlgorithm)!
