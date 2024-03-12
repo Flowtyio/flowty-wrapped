@@ -6,9 +6,9 @@ import "NonFungibleToken"
 import "ExampleNFT"
 import "ExampleNFT2"
 import "ExampleToken"
-// import "ExampleTokenUnsupported"
+import "ExampleTokenUnsupported"
 import "FlowToken"
-// import "NFTStorefrontV2"
+import "NFTStorefrontV2"
 
 // Helper functions. All of the following were taken from
 // https://github.com/onflow/Offers/blob/fd380659f0836e5ce401aa99a2975166b2da5cb0/lib/cadence/test/Offers.cdc

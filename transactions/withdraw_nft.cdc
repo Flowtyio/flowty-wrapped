@@ -14,4 +14,4 @@ transaction(owner: Address, receiver: Address, withdrawID: UInt64) {
 
   recipient.deposit(token: <-nft)
   }
-} 
+}

@@ -8,8 +8,8 @@ access(all) contract WrappedEditions {
         
         access(all) let totalNftsOwned: Int
         access(all) let floatCount: Int
-        access(all) let favoriteCollections: [String] // type identifier of each collection
-        access(all) let collections: [String]  // type identifier of each collection
+        access(all) let favoriteCollections: [String]
+        access(all) let collections: [String]
 
         access(all) fun toTraits(): MetadataViews.Traits {
             let traits: [MetadataViews.Trait] = [
@@ -98,9 +98,9 @@ access(all) contract WrappedEditions {
             let nft <- FlowtyWrapped.mint(id: FlowtyWrapped.totalSupply, serial: self.supply, editionName: self.name, address: address, data: data)
 
             // allocate raffle tickets
-            // let manager = FlowtyWrapped.getRaffleManager()
-            // let raffle = manager.borrowRaffle(id: self.raffleID)
-            //     ?? panic("raffle not found in manager")
+            let manager = FlowtyWrapped.getRaffleManager()
+            let raffle = manager.borrowRaffle(id: self.raffleID)
+                ?? panic("raffle not found in manager")
             
             let entries: [Address] = []
             var count = 0
@@ -108,7 +108,7 @@ access(all) contract WrappedEditions {
                 entries.append(address)
                 count = count + 1
             }
-            // raffle.addEntries(entries)
+            raffle.addEntries(entries)
 
             self.mintedAddresses[address] = true
             return <- nft

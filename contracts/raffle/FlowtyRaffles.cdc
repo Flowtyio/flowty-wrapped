@@ -351,7 +351,7 @@ access(all) contract FlowtyRaffles {
 
         // return prg.nextUInt64()
         // TODO: use commented-out implementation once we can test using the randomness beacon in the cadence testing framework
-        return 1
+        return revertibleRandom<UInt64>()
     }
 
     access(all) fun extractString(_ value: AnyStruct?): String? {

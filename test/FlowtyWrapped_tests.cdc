@@ -6,10 +6,10 @@ import "MetadataViews"
 import "WrappedEditions"
 import "FlowtyRaffles"
 
-pub  let rafflesAcct = Test.getAccount(Address(0x0000000000000007))
-pub  let minterAccount = Test.getAccount(Address(0x0000000000000007))
+access(all)  let rafflesAcct = Test.getAccount(Address(0x0000000000000007))
+access(all)  let minterAccount = Test.getAccount(Address(0x0000000000000007))
 
-pub fun setup() {
+access(all) fun setup() {
     var err = Test.deployContract(name: "FlowtyRaffles", path: "../contracts/raffle/FlowtyRaffles.cdc", arguments: [])
     Test.expect(err, Test.beNil())
 
@@ -38,16 +38,16 @@ pub fun setup() {
     
 }
 
-pub fun testSetupManager() {
+access(all) fun testSetupManager() {
     let acct = Test.createAccount()
     txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
 }
 
-pub fun testGetRaffleManager() {
+access(all) fun testGetRaffleManager() {
     scriptExecutor("raffle/borrow_raffle_manager.cdc", [rafflesAcct.address])
 }
 
-pub fun testSetCollectionExternalUrl() {
+access(all) fun testSetCollectionExternalUrl() {
     let baseHtmlUrl: String = "https://flowty.io/asset/0x0000000000000007/FlowtyWrappedTEST"
 
     txExecutor("set_collection_external_url.cdc", [rafflesAcct], [baseHtmlUrl], nil)
@@ -57,13 +57,13 @@ pub fun testSetCollectionExternalUrl() {
     assert(castedResult == baseHtmlUrl, message: "baseHtmlUrl does not match expected")
 }
 
-pub fun testMint() {
+access(all) fun testMint() {
     let acct = Test.createAccount()
     let username: String = "user1"
     setupForMint(acct: acct, name: username)   
 }
 
-pub fun testGetEditions() {
+access(all) fun testGetEditions() {
     let acct = Test.createAccount()
     let username: String = "user1"
     setupForMint(acct: acct, name: username)
@@ -75,7 +75,7 @@ pub fun testGetEditions() {
     scriptExecutor("get_editions_flowty_wrapped.cdc", [acct.address, nftID1])
 }
 
-pub fun testEditionResolveView() {
+access(all) fun testEditionResolveView() {
     let acct = Test.createAccount()
 
     let currentEditionNumber = getEditionNumber()
@@ -105,7 +105,7 @@ pub fun testEditionResolveView() {
     assert(max == expectedEditionMax, message: "max should be nil")
 }
 
-pub fun testDepositToWrongAddressFails() {
+access(all) fun testDepositToWrongAddressFails() {
     let acct = Test.createAccount()
     let wrongAccount = Test.createAccount()
     
@@ -127,7 +127,7 @@ pub fun testDepositToWrongAddressFails() {
 
 
     
-pub fun testBorrowNFT() {
+access(all) fun testBorrowNFT() {
     let acct = Test.createAccount()
     let username: String = "user1"
     setupForMint(acct: acct, name: username)
@@ -140,7 +140,7 @@ pub fun testBorrowNFT() {
     scriptExecutor("borrow_nft.cdc", [acct.address, nftID1])
 }
 
-pub fun testSingleMint() {
+access(all) fun testSingleMint() {
     let acct = Test.createAccount()
 
     txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
@@ -158,7 +158,7 @@ pub fun testSingleMint() {
     txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, username, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], "address has already been minted")
 }
 
-pub fun testWithdrawFails() {
+access(all) fun testWithdrawFails() {
     let acct = Test.createAccount()
     let acct2 = Test.createAccount()
     let username: String = "user1"
@@ -172,7 +172,7 @@ pub fun testWithdrawFails() {
     txExecutor("withdraw_nft.cdc", [acct], [acct.address, acct2.address, nftID1], "Flowty Wrapped is not transferrable")
 }
 
-pub fun testMediasIpfsUrl() {
+access(all) fun testMediasIpfsUrl() {
     let acct = Test.createAccount()
     let username: String = "user1"
     setupForMint(acct: acct, name: username)
@@ -185,10 +185,10 @@ pub fun testMediasIpfsUrl() {
 
     let ipfsMedia = medias.items[0]
     let ipfsUrl = ipfsMedia.file.uri()
-    assert(ipfsUrl == "ipfs://QmRfVR98oe6qxeWFcnY9tfM2CLUJg3rvxbBPS5LjYwp69Z?username=user1&raffleTickets=1", message: "unexpected ipfs url")
+    assert(ipfsUrl == "ipfs://QmfPkn13gbBNVK6bKtdqyUEa92bmqDy8aVQqGj3pByyyoP?username=user1&raffleTickets=1", message: "unexpected ipfs url")
 }
 
-pub fun testIpfsUrlNoName() {
+access(all) fun testIpfsUrlNoName() {
     let acct = Test.createAccount()
     let username: String = ""
     setupForMint(acct: acct, name: username)
@@ -201,10 +201,10 @@ pub fun testIpfsUrlNoName() {
 
     let ipfsMedia = medias.items[0]
     let ipfsUrl = ipfsMedia.file.uri()
-    assert(ipfsUrl == "ipfs://QmRfVR98oe6qxeWFcnY9tfM2CLUJg3rvxbBPS5LjYwp69Z?username=".concat(acct.address.toString()).concat("&raffleTickets=1"), message: "unexpected ipfs url")
+    assert(ipfsUrl == "ipfs://QmfPkn13gbBNVK6bKtdqyUEa92bmqDy8aVQqGj3pByyyoP?username=".concat(acct.address.toString()).concat("&raffleTickets=1"), message: "unexpected ipfs url")
 }
 
-pub fun testDrawRaffle() {
+access(all) fun testDrawRaffle() {
     let acct = Test.createAccount()
     let username: String = "user1"
 
@@ -212,11 +212,11 @@ pub fun testDrawRaffle() {
     let createEvent = (Test.eventsOfType(Type<FlowtyRaffles.RaffleCreated>()).removeLast() as! FlowtyRaffles.RaffleCreated)
     
     setupForMint(acct: acct, name: username)
-    let entries: AnyStruct = scriptExecutor("raffle/get_raffle_entries.cdc", [minterAccount.address, createEvent.raffleID])!
-    let castedEntries = entries as! [AnyStruct]
+    let entries: AnyStruct = scriptExecutor("raffle/get_raffle_entries.cdc", [minterAccount.address, createEvent.raffleID])
+    let castedEntries = entries! as! [AnyStruct]
     
     assert(castedEntries.length >= 1, message: "no entries")
-    assert(castedEntries[castedEntries.length - 1] as! Address == acct.address)
+    assert(castedEntries.removeLast() as! Address == acct.address)
 
     let drawing = drawFromRaffle(rafflesAcct, createEvent.raffleID)
 
@@ -231,15 +231,15 @@ pub fun testDrawRaffle() {
     assert(winnerIsFromEntryPool)
 }
 
-pub fun registerEdition(rafflesAcct: Test.Account, removeAfterReveal: Bool, start: UInt64?, end: UInt64?, baseImageUrl: String, baseHtmlUrl: String) {
+access(all) fun registerEdition(rafflesAcct: Test.TestAccount, removeAfterReveal: Bool, start: UInt64?, end: UInt64?, baseImageUrl: String, baseHtmlUrl: String) {
     txExecutor("register_edition.cdc", [rafflesAcct], [removeAfterReveal, start, end, baseImageUrl, baseHtmlUrl], nil)
 }
 
-pub fun getMedias(addr: Address, nftID: UInt64): MetadataViews.Medias {
+access(all) fun getMedias(addr: Address, nftID: UInt64): MetadataViews.Medias {
     return scriptExecutor("get_medias.cdc", [addr, nftID])! as! MetadataViews.Medias
 }
 
-pub fun getEditionNumber(): UInt64{
+access(all) fun getEditionNumber(): UInt64{
     let editionName = "Flowty Wrapped 2023"
     let res = scriptExecutor("get_total_edition_supply.cdc", [minterAccount.address, editionName])
 
@@ -248,7 +248,7 @@ pub fun getEditionNumber(): UInt64{
 
 }
 
-pub fun setupForMint(acct: Test.Account, name: String) {
+access(all) fun setupForMint(acct: Test.TestAccount, name: String) {
 
     txExecutor("setup_flowty_wrapped.cdc", [acct], [], nil)
 
@@ -261,7 +261,7 @@ pub fun setupForMint(acct: Test.Account, name: String) {
     txExecutor("mint_flowty_wrapped.cdc", [minterAccount], [acct.address, name, ticket, totalNftsOwned, floatCount, favoriteCollections, collections], nil)
 }
 
-pub fun drawFromRaffle(_ signer: Test.Account, _ id: UInt64): String {
+access(all) fun drawFromRaffle(_ signer: Test.TestAccount, _ id: UInt64): String {
     txExecutor("raffle/draw_from_raffle.cdc", [signer], [id], nil)
 
     let drawingEvent = Test.eventsOfType(Type<FlowtyRaffles.RaffleReceiptRevealed>()).removeLast() as! FlowtyRaffles.RaffleReceiptRevealed

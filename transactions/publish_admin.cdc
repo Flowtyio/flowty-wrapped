@@ -1,13 +1,9 @@
 import "FlowtyWrapped"
 
 transaction(receiver: Address) {
-    prepare(acct: AuthAccount) {
-        let identifier = "FlowtyWrapped_Admin_".concat(receiver.toString())
-        let p = PrivatePath(identifier: identifier)!
+    prepare(acct: auth(Storage, Capabilities, Inbox) &Account) {
 
-        acct.unlink(p)
-        let cap = acct.link<&FlowtyWrapped.Admin>(p, target: FlowtyWrapped.AdminStoragePath)
-            ?? panic("failed to link admin capability")
+        let cap = acct.capabilities.storage.issue<&FlowtyWrapped.Admin>(FlowtyWrapped.AdminStoragePath)
 
         acct.inbox.publish(cap, name: "flowty-wrapped-minter", recipient: receiver)
     }

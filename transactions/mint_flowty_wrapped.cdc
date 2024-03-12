@@ -18,10 +18,10 @@ transaction(address: Address, username: String, ticket: Int, totalNftsOwned: Int
         let wrapped2023Data = WrappedEditions.Wrapped2023Data(
             username, 
             ticket,
-            totalNftsOwned,
-            floatCount,
-            favoriteCollections,
-            collections
+            totalNftsOwned: totalNftsOwned,
+            floatCount: floatCount,
+            favoriteCollections: favoriteCollections,
+            collections: collections
         )
          let data: {String: AnyStruct} = { 
             "wrapped": wrapped2023Data

@@ -377,7 +377,7 @@ access(all) contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         pre {
             self.editions[name] != nil: "no edition found with given name"
         }
-        return (&self.editions[name] as &{WrappedEdition}?)!
+        return &self.editions[name]!
     }
 
     access(all) fun getEdition(_ name: String): {WrappedEdition} {
