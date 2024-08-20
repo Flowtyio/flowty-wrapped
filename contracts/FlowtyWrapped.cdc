@@ -6,35 +6,37 @@ import "FungibleToken"
 import "FlowtyRaffles"
 import "FlowtyRaffleSource"
 
-pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
+access(all) contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     // Total supply of FlowtyWrapped NFTs
-    pub var totalSupply: UInt64
-    pub var collectionExternalUrl: String
-    pub var nftExternalBaseUrl: String
+    access(all) var totalSupply: UInt64
+    access(all) var collectionExternalUrl: String
+    access(all) var nftExternalBaseUrl: String
     access(account) let editions: {String: {WrappedEdition}}
 
-    /// The event that is emitted when the contract is created
-    pub event ContractInitialized()
+    access(all) entitlement Owner
 
-    pub event CollectionCreated(uuid: UInt64)
+    /// The event that is emitted when the contract is created
+    access(all) event ContractInitialized()
+
+    access(all) event CollectionCreated(uuid: UInt64)
 
     /// The event that is emitted when an NFT is withdrawn from a Collection
-    pub event Withdraw(id: UInt64, from: Address?)
+    access(all) event Withdraw(id: UInt64, from: Address?)
 
     /// The event that is emitted when an NFT is deposited to a Collection
-    pub event Deposit(id: UInt64, to: Address?)
+    access(all) event Deposit(id: UInt64, to: Address?)
 
     /// Storage and Public Paths
-    pub let CollectionStoragePath: StoragePath
-    pub let CollectionPublicPath: PublicPath
-    pub let CollectionProviderPath: PrivatePath
-    pub let AdminStoragePath: StoragePath
-    pub let AdminPublicPath: PublicPath
+    access(all) let CollectionStoragePath: StoragePath
+    access(all) let CollectionPublicPath: PublicPath
+    access(all) let CollectionProviderPath: PrivatePath
+    access(all) let AdminStoragePath: StoragePath
+    access(all) let AdminPublicPath: PublicPath
 
-    pub struct interface WrappedEdition {
-        pub fun getName(): String
-        pub fun resolveView(_ t: Type, _ nft: &NFT): AnyStruct?
-        pub fun getEditionSupply(): UInt64
+    access(all) struct interface WrappedEdition {
+        access(all) fun getName(): String
+        access(all) fun resolveView(_ t: Type, _ nft: &NFT): AnyStruct?
+        access(all) fun getEditionSupply(): UInt64
 
         access(account) fun setStatus(_ s: String)
         access(account) fun mint(address: Address, data: {String: AnyStruct}): @NFT
@@ -44,13 +46,13 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     /// New instances will be created using the NFTMinter resource
     /// and stored in the Collection resource
     ///
-    pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
+    access(all) resource NFT: NonFungibleToken.NFT {
         /// The unique ID that each NFT has
-        pub let id: UInt64
-        pub let serial: UInt64
-        pub let editionName: String
-        pub let address: Address
-        pub let data: {String: AnyStruct}
+        access(all) let id: UInt64
+        access(all) let serial: UInt64
+        access(all) let editionName: String
+        access(all) let address: Address
+        access(all) let data: {String: AnyStruct}
 
         init(
             id: UInt64,
@@ -71,7 +73,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// @return An array of Types defining the implemented views. This value will be used by
         ///         developers to know which parameter to pass to the resolveView() method.
         ///
-        pub fun getViews(): [Type] {
+        access(all) view fun getViews(): [Type] {
             return [
                 Type<MetadataViews.Display>(),
                 Type<MetadataViews.Medias>(),
@@ -90,7 +92,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// @param view: The Type of the desired view.
         /// @return A structure representing the requested view.
         ///
-        pub fun resolveView(_ view: Type): AnyStruct? {
+        access(all) fun resolveView(_ view: Type): AnyStruct? {
             switch view {
                 case Type<MetadataViews.Display>():
                     let edition = FlowtyWrapped.getEditionRef(self.editionName)
@@ -110,24 +112,25 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
                 case Type<MetadataViews.ExternalURL>():
                     return MetadataViews.ExternalURL(FlowtyWrapped.nftExternalBaseUrl.concat("/").concat(self.id.toString()))
                 case Type<MetadataViews.NFTCollectionData>():
-                    return FlowtyWrapped.resolveView(view)
+                    return FlowtyWrapped.resolveContractView(resourceType: Type<@NFT>(), viewType: view)
                 case Type<MetadataViews.NFTCollectionDisplay>():
-                    return FlowtyWrapped.resolveView(view)
+                    return FlowtyWrapped.resolveContractView(resourceType: Type<@NFT>(), viewType: view)
                 case Type<MetadataViews.Traits>():
                     let edition = FlowtyWrapped.getEditionRef(self.editionName)
                     return edition.resolveView(view, &self as &NFT)
             }
             return nil
         }
+
+        access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
+            return <- create Collection()
+        }
     }
 
     /// Defines the methods that are particular to this NFT contract collection
     ///
-    pub resource interface FlowtyWrappedCollectionPublic {
-        pub fun deposit(token: @NonFungibleToken.NFT)
-        pub fun getIDs(): [UInt64]
-        pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
-        pub fun borrowFlowtyWrapped(id: UInt64): &FlowtyWrapped.NFT? {
+    access(all) resource interface FlowtyWrappedCollectionPublic: NonFungibleToken.Collection {
+        access(all) fun borrowFlowtyWrapped(_ id: UInt64): &FlowtyWrapped.NFT? {
             post {
                 (result == nil) || (result?.id == id):
                     "Cannot borrow FlowtyWrapped reference: the ID of the returned reference is incorrect"
@@ -139,10 +142,10 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     /// In order to be able to manage NFTs any account will need to create
     /// an empty collection first
     ///
-    pub resource Collection: FlowtyWrappedCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
+    access(all) resource Collection: FlowtyWrappedCollectionPublic {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an `UInt64` ID field
-        pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
+        access(all) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
 
         init () {
             self.ownedNFTs <- {}
@@ -153,7 +156,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// @param withdrawID: The ID of the NFT that wants to be withdrawn
         /// @return The NFT resource that has been taken out of the collection
         ///
-        pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
+        access(NonFungibleToken.Withdraw) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             assert(false, message: "Flowty Wrapped is not transferrable.")
 
             let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
@@ -167,7 +170,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         ///
         /// @param token: The NFT resource to be included in the collection
         /// 
-        pub fun deposit(token: @NonFungibleToken.NFT) {
+        access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
             let token <- token as! @FlowtyWrapped.NFT
             let nftOwnerAddress = token.address
 
@@ -187,7 +190,7 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         ///
         /// @return An array containing the IDs of the NFTs in the collection
         ///
-        pub fun getIDs(): [UInt64] {
+        access(all) view fun getIDs(): [UInt64] {
             return self.ownedNFTs.keys
         }
 
@@ -197,8 +200,8 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// @param id: The ID of the wanted NFT
         /// @return A reference to the wanted NFT resource
         ///
-        pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
-            return (&self.ownedNFTs[id] as &NonFungibleToken.NFT?)!
+        access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}? {
+            return &self.ownedNFTs[id]
         }
  
         /// Gets a reference to an NFT in the collection so that 
@@ -207,30 +210,28 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         /// @param id: The ID of the wanted NFT
         /// @return A reference to the wanted NFT resource
         ///        
-        pub fun borrowFlowtyWrapped(id: UInt64): &FlowtyWrapped.NFT? {
+        access(all) view fun borrowFlowtyWrapped(_ id: UInt64): &FlowtyWrapped.NFT? {
             if self.ownedNFTs[id] != nil {
                 // Create an authorized reference to allow downcasting
-                let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
+                let ref = (&self.ownedNFTs[id] as &{NonFungibleToken.NFT}?)!
                 return ref as! &FlowtyWrapped.NFT
             }
 
             return nil
         }
 
-        /// Gets a reference to the NFT only conforming to the `{MetadataViews.Resolver}`
-        /// interface so that the caller can retrieve the views that the NFT
-        /// is implementing and resolve them
-        ///
-        /// @param id: The ID of the wanted NFT
-        /// @return The resource reference conforming to the Resolver interface
-        /// 
-        pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
-            let nft = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-            return nft as! &FlowtyWrapped.NFT
+        access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
+            return <- create Collection()
         }
 
-        destroy() {
-            destroy self.ownedNFTs
+        access(all) view fun getSupportedNFTTypes(): {Type: Bool} {
+            return {
+                Type<@NFT>(): true
+            }
+        }
+
+        access(all) view fun isSupportedNFTType(type: Type): Bool {
+            return type == Type<@NFT>()
         }
     }
 
@@ -238,24 +239,28 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     ///
     /// @return The new Collection resource
     ///
-    pub fun createEmptyCollection(): @NonFungibleToken.Collection {
+    access(all) fun createEmptyCollection(nftType: Type): @{NonFungibleToken.Collection} {
+        pre {
+            nftType == Type<@NFT>()
+        }
+
         let c <- create Collection()
         emit CollectionCreated(uuid: c.uuid)
         return <- c
     }
 
-    pub resource interface AdminPublic {}
+    access(all) resource interface AdminPublic {}
 
     /// Resource that an admin or something similar would own to be
     /// able to mint new NFTs
     ///
-    pub resource Admin: AdminPublic {
+    access(all) resource Admin: AdminPublic {
         /// Mints a new NFT with a new ID and deposit it in the
         /// recipients collection using their collection reference
         ///
         /// @param recipient: A capability to the collection where the new NFT will be deposited
         ///
-        pub fun mintNFT(editionName: String, address: Address, data: {String: AnyStruct}): @FlowtyWrapped.NFT {
+        access(Owner) fun mintNFT(editionName: String, address: Address, data: {String: AnyStruct}): @FlowtyWrapped.NFT {
             // we want IDs to start at 1, so we'll increment first
             FlowtyWrapped.totalSupply = FlowtyWrapped.totalSupply + 1
 
@@ -265,24 +270,21 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
             return <- nft
         }
 
-        pub fun getEdition(editionName: String): AnyStruct{
+        access(Owner) fun getEdition(editionName: String): AnyStruct{
             let edition = FlowtyWrapped.getEditionRef(editionName)
             return edition
         }
 
-        pub fun registerEdition(_ edition: {WrappedEdition}) {
-            pre {
-                FlowtyWrapped.editions[edition.getName()] == nil: "edition name already exists"
-            }
-
+        access(Owner) fun registerEdition(_ edition: {WrappedEdition}) {
+            assert(FlowtyWrapped.editions[edition.getName()] == nil, message: "edition name already exists")
             FlowtyWrapped.editions[edition.getName()] = edition
         }
 
-        pub fun setCollectionExternalUrl(_ s: String) {
+        access(Owner) fun setCollectionExternalUrl(_ s: String) {
             FlowtyWrapped.collectionExternalUrl = s
         }
 
-        pub fun createAdmin(): @Admin {
+        access(Owner) fun createAdmin(): @Admin {
             return <- create Admin()
         }
     }
@@ -292,18 +294,16 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     /// @param view: The Type of the desired view.
     /// @return A structure representing the requested view.
     ///
-    pub fun resolveView(_ view: Type): AnyStruct? {
-        switch view {
+    access(all) fun resolveContractView(resourceType: Type?, viewType: Type): AnyStruct? {
+        switch viewType {
             case Type<MetadataViews.NFTCollectionData>():
                 return MetadataViews.NFTCollectionData(
                     storagePath: FlowtyWrapped.CollectionStoragePath,
                     publicPath: FlowtyWrapped.CollectionPublicPath,
-                    providerPath: FlowtyWrapped.CollectionProviderPath,
-                    publicCollection: Type<&FlowtyWrapped.Collection{FlowtyWrapped.FlowtyWrappedCollectionPublic}>(),
-                    publicLinkedType: Type<&FlowtyWrapped.Collection{FlowtyWrapped.FlowtyWrappedCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(),
-                    providerLinkedType: Type<&FlowtyWrapped.Collection{FlowtyWrapped.FlowtyWrappedCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>(),
-                    createEmptyCollectionFunction: (fun (): @NonFungibleToken.Collection {
-                        return <-FlowtyWrapped.createEmptyCollection()
+                    publicCollection: Type<&FlowtyWrapped.Collection>(),
+                    publicLinkedType: Type<&FlowtyWrapped.Collection>(),
+                    createEmptyCollectionFunction: (fun (): @{NonFungibleToken.Collection} {
+                        return <-FlowtyWrapped.createEmptyCollection(nftType: Type<@NFT>())
                     })
                 )
             case Type<MetadataViews.NFTCollectionDisplay>():
@@ -313,15 +313,15 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
                         externalURL: MetadataViews.ExternalURL(FlowtyWrapped.collectionExternalUrl),
                         squareImage: MetadataViews.Media(
                             file: MetadataViews.IPFSFile(
-                                url: "QmdCiwwJ7z2gQecDr6hn4pJj91miWYnFC178o9p6JKftmi",
-                                nil
+                                cid: "QmdCiwwJ7z2gQecDr6hn4pJj91miWYnFC178o9p6JKftmi",
+                                path: nil
                             ),
                             mediaType: "image/jpg"
                         ),
                         bannerImage: MetadataViews.Media(
                             file: MetadataViews.IPFSFile(
-                                url: "QmcLJhJh6yuLAoH6wWKMDS2zUv6myduXQc83zD5xv2V8tA",
-                                nil
+                                cid: "QmcLJhJh6yuLAoH6wWKMDS2zUv6myduXQc83zD5xv2V8tA",
+                                path: nil
                             ),
                             mediaType: "image/jpg"
                         ),
@@ -338,19 +338,19 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
     /// @return An array of Types defining the implemented views. This value will be used by
     ///         developers to know which parameter to pass to the resolveView() method.
     ///
-    pub fun getViews(): [Type] {
+    access(all) view fun getContractViews(resourceType: Type?): [Type] {
         return [
             Type<MetadataViews.NFTCollectionData>(),
             Type<MetadataViews.NFTCollectionDisplay>()
         ]
     }
 
-    access(account) fun getRaffleManager(): &FlowtyRaffles.Manager {
-        return self.account.borrow<&FlowtyRaffles.Manager>(from: FlowtyRaffles.ManagerStoragePath)!
+    access(account) fun getRaffleManager(): auth(FlowtyRaffles.Manage) &FlowtyRaffles.Manager {
+        return self.account.storage.borrow<auth(FlowtyRaffles.Manage) &FlowtyRaffles.Manager>(from: FlowtyRaffles.ManagerStoragePath)!
     }
 
     access(contract) fun borrowAdmin(): &Admin {
-        return self.account.borrow<&Admin>(from: self.AdminStoragePath)!
+        return self.account.storage.borrow<&Admin>(from: self.AdminStoragePath)!
     }
 
     access(account) fun mint(
@@ -369,11 +369,11 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
         return (&self.editions[name] as &{WrappedEdition}?)!
     }
 
-    pub fun getEdition(_ name: String): {WrappedEdition} {
+    access(all) fun getEdition(_ name: String): {WrappedEdition} {
         return self.editions[name] ?? panic("no edition found with given name")
     }
 
-    pub fun getAccountAddress(): Address {
+    access(all) fun getAccountAddress(): Address {
         return self.account.address
     }
 
@@ -392,24 +392,30 @@ pub contract FlowtyWrapped: NonFungibleToken, ViewResolver {
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
-        self.account.save(<-collection, to: self.CollectionStoragePath)
+        self.account.storage.save(<-collection, to: self.CollectionStoragePath)
 
         // create a public capability for the collection
-        self.account.link<&FlowtyWrapped.Collection{NonFungibleToken.CollectionPublic, FlowtyWrapped.FlowtyWrappedCollectionPublic, MetadataViews.ResolverCollection}>(
-            self.CollectionPublicPath,
-            target: self.CollectionStoragePath 
+        self.account.capabilities.publish(
+            self.account.capabilities.storage.issue<&FlowtyWrapped.Collection>(self.CollectionStoragePath),
+            at: self.CollectionPublicPath
         )
 
         // Create a Minter resource and save it to storage
         let minter <- create Admin()
-        self.account.save(<-minter, to: self.AdminStoragePath)
-        self.account.link<&Admin{AdminPublic}>(self.AdminPublicPath, target: self.AdminStoragePath)
+        self.account.storage.save(<-minter, to: self.AdminStoragePath)
+        self.account.capabilities.publish(
+            self.account.capabilities.storage.issue<&{AdminPublic}>(self.AdminStoragePath),
+            at: self.AdminPublicPath
+        )
 
         emit ContractInitialized()
 
         let manager <- FlowtyRaffles.createManager()
-        self.account.save(<-manager, to: FlowtyRaffles.ManagerStoragePath)
-        self.account.link<&FlowtyRaffles.Manager{FlowtyRaffles.ManagerPublic}>(FlowtyRaffles.ManagerPublicPath, target: FlowtyRaffles.ManagerStoragePath)
+        self.account.storage.save(<-manager, to: FlowtyRaffles.ManagerStoragePath)
+        self.account.capabilities.publish(
+            self.account.capabilities.storage.issue<&FlowtyRaffles.Manager>(FlowtyRaffles.ManagerStoragePath),
+            at: FlowtyRaffles.ManagerPublicPath
+        )
 
         self.collectionExternalUrl = "https://flowty.io/collection/".concat(self.account.address.toString()).concat("/FlowtyWrapped")
         self.nftExternalBaseUrl = "https://flowty.io/asset/".concat(self.account.address.toString()).concat("/FlowtyWrapped")

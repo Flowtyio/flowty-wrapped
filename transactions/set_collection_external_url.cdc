@@ -2,10 +2,10 @@ import "FlowtyWrapped"
 
 
 transaction(url: String) {
-    let admin: &FlowtyWrapped.Admin
+    let admin: auth(FlowtyWrapped.Owner) &FlowtyWrapped.Admin
 
-    prepare(acct: AuthAccount) {
-        self.admin = acct.borrow<&FlowtyWrapped.Admin>(from: FlowtyWrapped.AdminStoragePath)
+    prepare(acct: auth(Storage) &Account) {
+        self.admin = acct.storage.borrow<auth(FlowtyWrapped.Owner) &FlowtyWrapped.Admin>(from: FlowtyWrapped.AdminStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
     }
 

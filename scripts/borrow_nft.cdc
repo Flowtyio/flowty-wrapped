@@ -3,15 +3,10 @@ import "MetadataViews"
 
 import "FlowtyWrapped"
 
-pub fun main(addr: Address, nftID: UInt64): Bool{
-  let cp = getAccount(addr).getCapability<&{NonFungibleToken.CollectionPublic}>(FlowtyWrapped.CollectionPublicPath).borrow()
+access(all) fun main(addr: Address, nftID: UInt64): Bool{
+  let cp = getAccount(addr).capabilities.get<&{NonFungibleToken.CollectionPublic}>(FlowtyWrapped.CollectionPublicPath).borrow()
     ?? panic("collection not found")
 
-  let nft = cp.borrowNFT(id: nftID) 
-      
-  if (nft != nil) {
-    return true
-  } else {
-    return false
-  }
+  let nft = cp.borrowNFT(nftID) 
+  return nft != nil
 }

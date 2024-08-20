@@ -2,17 +2,17 @@ import "MetadataViews"
 import "FlowtyWrapped"
 import "StringUtils"
 
-pub contract WrappedEditions {
-    pub struct Wrapped2023Data {
-        pub let username: String?
-        pub let tickets: Int
+access(all) contract WrappedEditions {
+    access(all) struct Wrapped2023Data {
+        access(all) let username: String?
+        access(all) let tickets: Int
         
-        pub let totalNftsOwned: Int
-        pub let floatCount: Int
-        pub let favoriteCollections: [String] // type identifier of each collection
-        pub let collections: [String]  // type identifier of each collection
+        access(all) let totalNftsOwned: Int
+        access(all) let floatCount: Int
+        access(all) let favoriteCollections: [String] // type identifier of each collection
+        access(all) let collections: [String]  // type identifier of each collection
 
-        pub fun toTraits(): MetadataViews.Traits {
+        access(all) fun toTraits(): MetadataViews.Traits {
             let traits: [MetadataViews.Trait] = [
                 WrappedEditions.buildTrait("username", self.username),
                 WrappedEditions.buildTrait("tickets", self.tickets),
@@ -25,7 +25,7 @@ pub contract WrappedEditions {
             return MetadataViews.Traits(traits)
         }
 
-        init(_ username: String?, _ tickets: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
+        init(_ username: String?, _ tickets: Int, _ totalNftsOwned: Int, _ floatCount: Int, _ favoriteCollections: [String], _ collections: [String]) {
             self.username = username
             self.tickets = tickets
             self.totalNftsOwned = totalNftsOwned
@@ -35,19 +35,19 @@ pub contract WrappedEditions {
         }
     }
 
-    pub struct Edition2023: FlowtyWrapped.WrappedEdition {
-        pub let name: String
-        pub var supply: UInt64
-        pub var baseImageUrl: String
-        pub var baseHtmlUrl: String
+    access(all) struct Edition2023: FlowtyWrapped.WrappedEdition {
+        access(all) let name: String
+        access(all) var supply: UInt64
+        access(all) var baseImageUrl: String
+        access(all) var baseHtmlUrl: String
 
-        pub let raffleID: UInt64
-        pub var status: String
+        access(all) let raffleID: UInt64
+        access(all) var status: String
 
-        pub let mintedAddresses: {Address: Bool}
+        access(all) let mintedAddresses: {Address: Bool}
 
-        pub fun resolveView(_ t: Type, _ nft: &FlowtyWrapped.NFT): AnyStruct? {
-            let wrapped = nft.data["wrapped"]! as! Wrapped2023Data
+        access(all) fun resolveView(_ t: Type, _ nft: &FlowtyWrapped.NFT): AnyStruct? {
+            let wrapped = nft.data["wrapped"]! as! &Wrapped2023Data
             switch t {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
@@ -71,7 +71,7 @@ pub contract WrappedEditions {
 
                     let params = "?username=".concat(username).concat("&raffleTickets=").concat(wrapped.tickets.toString())
                     let htmlMedia = MetadataViews.Media(
-                        file: MetadataViews.IPFSFile("QmRfVR98oe6qxeWFcnY9tfM2CLUJg3rvxbBPS5LjYwp69Z".concat(params), nil), mediaType: "text/html"
+                        file: MetadataViews.IPFSFile(cid: "QmRfVR98oe6qxeWFcnY9tfM2CLUJg3rvxbBPS5LjYwp69Z".concat(params), path: nil), mediaType: "text/html"
                     )
                     let imageMedia = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(url: self.baseImageUrl.concat(nft.serial.toString())), mediaType: "image/jpeg"
@@ -84,7 +84,7 @@ pub contract WrappedEditions {
             return nil
         }
 
-        pub fun getEditionSupply(): UInt64 {
+        access(all) fun getEditionSupply(): UInt64 {
             return self.supply
         }
 
@@ -115,19 +115,19 @@ pub contract WrappedEditions {
             return <- nft
         }
 
-        pub fun getName(): String {
+        access(all) fun getName(): String {
             return self.name
         }
 
-        pub fun setStatus(_ s: String) {
+        access(account) fun setStatus(_ s: String) {
             self.status = s
         }
 
-        pub fun setBaseImageUrl(_ s: String) {
+        access(FlowtyWrapped.Owner) fun setBaseImageUrl(_ s: String) {
             self.baseImageUrl = s
         }
 
-        pub fun setBaseHtmlUrl(_ s: String) {
+        access(FlowtyWrapped.Owner) fun setBaseHtmlUrl(_ s: String) {
             self.baseHtmlUrl = s
         }
 
@@ -143,7 +143,7 @@ pub contract WrappedEditions {
         }
     }
 
-    pub fun buildTrait(_ name: String, _ value: AnyStruct): MetadataViews.Trait {
+    access(all) fun buildTrait(_ name: String, _ value: AnyStruct): MetadataViews.Trait {
         return MetadataViews.Trait(name: name, value: value, displayType: nil, rarity: nil)
     }
 }

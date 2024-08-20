@@ -36,6 +36,15 @@
         "mainnet": "0x2fb4614ede95ab2b"
       }
     },
+    "RandomBeaconHistory": {
+      "source": "./contracts/raffle/RandomBeaconHistory.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "mainnet": "0xe467b9dd11fa00df",
+        "testnet": "0x8c5303eaa26202d6",
+        "testing": "0x0000000000000001"
+      }
+    },
     "FungibleToken": {
       "source": "./node_modules/@flowtyio/flow-contracts/contracts/FungibleToken.cdc",
       "aliases": {
@@ -85,6 +94,14 @@
         "mainnet": "0xa340dc0a4ec828ab",
         "testing": "0x0000000000000006"
       }
+    },
+    "Burner": {
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/Burner.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x9a0766d93b6608b7",
+        "mainnet": "0xf233dcee88fe0abe"
+      }
     }
   },
   "networks": {
@@ -130,7 +147,9 @@
         "FlowtyRaffles",
         "FlowtyRaffleSource",
         "ArrayUtils",
-        "StringUtils"
+        "StringUtils",
+        "Burner",
+        "RandomBeaconHistory"
       ],
       "emulator-ft": [
         "FungibleToken"
