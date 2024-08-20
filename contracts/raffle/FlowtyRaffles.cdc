@@ -1,4 +1,5 @@
 import "MetadataViews"
+import "RandomBeaconHistory"
 // import "Xorshift128plus"
 
 access(all) contract FlowtyRaffles {
