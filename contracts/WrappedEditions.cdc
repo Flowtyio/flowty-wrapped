@@ -25,7 +25,7 @@ access(all) contract WrappedEditions {
             return MetadataViews.Traits(traits)
         }
 
-        init(_ username: String?, _ tickets: Int, totalNftsOwned: Int, floatCount: Int, favoriteCollections: [String], collections: [String]) {
+        init(_ username: String?, _ tickets: Int, _ totalNftsOwned: Int, _ floatCount: Int, _ favoriteCollections: [String], _ collections: [String]) {
             self.username = username
             self.tickets = tickets
             self.totalNftsOwned = totalNftsOwned
@@ -47,7 +47,7 @@ access(all) contract WrappedEditions {
         access(all) let mintedAddresses: {Address: Bool}
 
         access(all) fun resolveView(_ t: Type, _ nft: &FlowtyWrapped.NFT): AnyStruct? {
-            let wrapped = nft.data["wrapped"]! as! Wrapped2023Data
+            let wrapped = nft.data["wrapped"]! as! &Wrapped2023Data
             switch t {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(

@@ -1,4 +1,4 @@
-Flow CLI ready to paste scripts for Flowty Wrapper transactions and scripts
+Flow CLI ready to paste scripts for Flowty Wrapped transactions and scripts
 
 1 - Create new emulator account
 (if you already made this step before but restarted emulator, remove emulator-1 object from flow.json)
