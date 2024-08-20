@@ -1,5 +1,5 @@
 import "FlowtyWrapped"
 
-pub fun main(): String {  
+access(all) fun main(): String {  
   return  FlowtyWrapped.collectionExternalUrl
 }
